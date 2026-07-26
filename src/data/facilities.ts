@@ -16,6 +16,7 @@ export type Facility = {
   careTypes: CareType[];
   ward: string;
   isInFukuokaCity: boolean;
+  isHotelResort?: boolean;
   prefecture: string;
   addressDetail: string;
   ageLimit: string;
@@ -49,11 +50,15 @@ export const AREAS = [
   "糸島市",
 ] as const;
 
+export const HOTEL_RESORT_AREA = "全国（ホテル・リゾート）";
+
 export const CARE_TYPE_OPTIONS: CareType[] = ["宿泊型", "通所型", "訪問型"];
 
 export const FEATURE_OPTIONS = ["公費助成対象", "自費プランあり"] as const;
 
-type FacilitySource = Omit<Facility, "prefecture" | "subsidyApplicable" | "availability" | "description" | "access" | "hours">;
+type FacilitySource = Omit<Facility, "prefecture" | "isHotelResort" | "subsidyApplicable" | "availability" | "description" | "access" | "hours"> & {
+  isHotelResort?: boolean;
+};
 
 const CONTACT_PLACEHOLDER = "詳細・ご予約は施設へ直接お問い合わせください。";
 
@@ -61,6 +66,7 @@ function createFacility(source: FacilitySource): Facility {
   return {
     ...source,
     prefecture: "福岡県",
+    isHotelResort: source.isHotelResort ?? false,
     subsidyApplicable: true,
     availability: "ok",
     description: `${source.ward}にある産後ケア施設です。${source.careTypes.join("・")}に対応しています。`,
@@ -76,6 +82,7 @@ export const facilities: Facility[] = [
     careTypes: ["宿泊型"],
     ward: "東区",
     isInFukuokaCity: true,
+    isHotelResort: true,
     addressDetail: "東区西戸崎18-25 ザ・ルイガンズ スパ&リゾート ホテル内",
     ageLimit: "4か月未満",
     contact: { note: "施設HPより予約・問合せ" },

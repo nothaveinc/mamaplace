@@ -6,6 +6,7 @@ import {
   AREAS,
   CARE_TYPE_OPTIONS,
   FEATURE_OPTIONS,
+  HOTEL_RESORT_AREA,
   type Facility,
 } from "@/data/facilities";
 import { getPriceDisplay } from "@/data/fukuokaSubsidy";
@@ -94,7 +95,14 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
   const sorted = useMemo(() => {
     const list = facilities.filter((facility) => {
       if (!effectiveFreeMode && !facility.isInFukuokaCity) return false;
-      if (area && facility.ward !== area) return false;
+      if (
+        area &&
+        (area === HOTEL_RESORT_AREA
+          ? !facility.isHotelResort
+          : facility.ward !== area)
+      ) {
+        return false;
+      }
       if (
         types.length > 0 &&
         !types.some((type) => facility.careTypes.includes(type))
@@ -215,6 +223,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
                   福岡県 {item}
                 </option>
               ))}
+              <option value={HOTEL_RESORT_AREA}>{HOTEL_RESORT_AREA}</option>
             </select>
           </div>
 
