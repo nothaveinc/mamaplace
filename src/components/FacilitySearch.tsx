@@ -367,7 +367,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
                       {facility.features.map((feature) => (
                         <span className="tag" key={feature}>{feature}</span>
                       ))}
-                      {effectiveFreeMode && !facility.isInFukuokaCity && (
+                      {((effectiveFreeMode && !facility.isInFukuokaCity) || !facility.subsidyApplicable) && (
                         <span className="tag tag--self-pay">公費対象外（自費）</span>
                       )}
                     </div>

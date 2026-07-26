@@ -32,6 +32,10 @@ export function getPriceDisplay(
   facility: Facility,
   { subsidyOn, freeMode, residenceOutside }: PriceDisplayOptions,
 ): { label: string; isInquiry: boolean } {
+  if (!facility.subsidyApplicable && facility.selfPayPriceLabel) {
+    return { label: facility.selfPayPriceLabel, isInquiry: false };
+  }
+
   if (residenceOutside || freeMode || !subsidyOn || !facility.isInFukuokaCity) {
     return {
       label: "実費は施設へお問い合わせください",
