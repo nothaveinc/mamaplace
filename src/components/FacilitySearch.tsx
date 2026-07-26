@@ -1,53 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   AREAS,
   CARE_TYPE_OPTIONS,
   FEATURE_OPTIONS,
   type Facility,
 } from "@/data/facilities";
+import { getPriceDisplay } from "@/data/fukuokaSubsidy";
+import type { CareType } from "@/data/subsidy";
 
-type SortMode = "recommend" | "rating" | "price-asc" | "price-desc";
+type SortMode = "recommend" | "name";
+type Residence = "福岡市" | "福岡市外";
 
 const AVAILABILITY_LABEL: Record<Facility["availability"], string> = {
   ok: "空きあり",
   few: "残りわずか",
 };
 
-const CARE_TYPE_LABEL: Record<Facility["careType"], string> = {
+const CARE_TYPE_LABEL: Record<CareType, string> = {
   宿泊型: "宿泊型（ショートステイ）",
   通所型: "通所型（デイケア）",
   訪問型: "訪問型（アウトリーチ）",
 };
 
 const FEATURE_LABEL: Record<(typeof FEATURE_OPTIONS)[number], string> = {
-  母乳ケア: "母乳ケア・授乳相談",
-  メンタルケア: "メンタルケア",
-  多胎児対応: "多胎児（双子など）対応",
-  上の子同伴可: "上の子同伴可",
   公費助成対象: "公費助成対象",
+  自費プランあり: "自費プランあり",
 };
-
-function StarRating({ rating }: { rating: number }) {
-  const rounded = Math.round(rating);
-  return (
-    <div className="rating-stars" aria-label={`評価 ${rating.toFixed(1)}、5点満点`}>
-      <span aria-hidden="true">
-        {[1, 2, 3, 4, 5].map((number) => (
-          <span
-            key={number}
-            className={`rating-stars__star${number > rounded ? " empty" : ""}`}
-          >
-            ★
-          </span>
-        ))}
-      </span>
-      <span className="rating-stars__score">{rating.toFixed(1)}</span>
-    </div>
-  );
-}
 
 function toggleValue<T extends string>(list: T[], value: T): T[] {
   return list.includes(value)
@@ -55,13 +36,50 @@ function toggleValue<T extends string>(list: T[], value: T): T[] {
     : [...list, value];
 }
 
+function linkedText(text: string): ReactNode {
+  const url = text.match(/https?:\/\/[^\s）)]+/)?.[0];
+  if (!url) return text;
+
+  const [before, after = ""] = text.split(url);
+  return (
+    <>
+      {before}
+      <a href={url} target="_blank" rel="noreferrer">
+        {url}
+      </a>
+      {after}
+    </>
+  );
+}
+
+function FacilityContact({ facility }: { facility: Facility }) {
+  return (
+    <div className="facility-card__contact">
+      <span>連絡先</span>
+      <div>
+        {facility.contact.phone && (
+          <a href={`tel:${facility.contact.phone}`}>{facility.contact.phone}</a>
+        )}
+        {facility.contact.phone && facility.contact.note && <br />}
+        {facility.contact.note && linkedText(facility.contact.note)}
+      </div>
+    </div>
+  );
+}
+
 export default function FacilitySearch({ facilities }: { facilities: Facility[] }) {
+  const [residence, setResidence] = useState<Residence>("福岡市");
+  const [subsidyOn, setSubsidyOn] = useState(true);
+  const [freeMode, setFreeMode] = useState(false);
   const [area, setArea] = useState("");
-  const [types, setTypes] = useState<Facility["careType"][]>([]);
+  const [types, setTypes] = useState<CareType[]>([]);
   const [features, setFeatures] = useState<(typeof FEATURE_OPTIONS)[number][]>([]);
   const [sort, setSort] = useState<SortMode>("recommend");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
+
+  const residenceOutside = residence === "福岡市外";
+  const effectiveFreeMode = residenceOutside || freeMode;
 
   useEffect(() => {
     if (!isDrawerOpen) return;
@@ -75,16 +93,22 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
 
   const sorted = useMemo(() => {
     const list = facilities.filter((facility) => {
-      if (area && facility.area !== area) return false;
-      if (types.length && !types.includes(facility.careType)) return false;
+      if (!effectiveFreeMode && !facility.isInFukuokaCity) return false;
+      if (area && facility.ward !== area) return false;
+      if (
+        types.length > 0 &&
+        !types.some((type) => facility.careTypes.includes(type))
+      ) {
+        return false;
+      }
       return features.every((feature) => facility.features.includes(feature));
     });
 
-    if (sort === "rating") list.sort((a, b) => b.rating - a.rating);
-    if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
-    if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
+    if (sort === "name") {
+      list.sort((a, b) => a.name.localeCompare(b.name, "ja"));
+    }
     return list;
-  }, [facilities, area, types, features, sort]);
+  }, [facilities, effectiveFreeMode, area, types, features, sort]);
 
   const clearFilters = () => {
     setArea("");
@@ -138,6 +162,44 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           <h2 className="search-filter-panel__title">条件をしぼって探す</h2>
 
           <div className="filter-group search-filter-group">
+            <label className="filter-label" htmlFor="search-residence">
+              居住地選択
+            </label>
+            <select
+              id="search-residence"
+              className="filter-select"
+              value={residence}
+              onChange={(event) => setResidence(event.target.value as Residence)}
+            >
+              <option value="福岡市">福岡市</option>
+              <option value="福岡市外">福岡市外</option>
+            </select>
+          </div>
+
+          <div className="search-filter-group search-check-list">
+            <label className="search-check-item">
+              <input
+                type="checkbox"
+                checked={subsidyOn}
+                onChange={(event) => setSubsidyOn(event.target.checked)}
+              />
+              <span className="search-check-item__box" aria-hidden="true" />
+              <span className="search-check-item__label">福岡市の補助金を利用する</span>
+            </label>
+            <label className="search-check-item">
+              <input
+                type="checkbox"
+                checked={freeMode}
+                onChange={(event) => setFreeMode(event.target.checked)}
+              />
+              <span className="search-check-item__box" aria-hidden="true" />
+              <span className="search-check-item__label">
+                自由に見る（完全自費・ホテルプラン含む）
+              </span>
+            </label>
+          </div>
+
+          <div className="filter-group search-filter-group">
             <label className="filter-label" htmlFor="search-area">
               エリア
             </label>
@@ -150,7 +212,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
               <option value="">すべてのエリア</option>
               {AREAS.map((item) => (
                 <option key={item} value={item}>
-                  {item === "横浜市" || item === "川崎市" ? "神奈川県" : "東京都"} {item}
+                  福岡県 {item}
                 </option>
               ))}
             </select>
@@ -192,19 +254,10 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           </fieldset>
 
           <div className="search-filter-actions">
-            <button
-              type="button"
-              className="btn btn--primary btn--full search-filter-apply"
-              onClick={() => setIsDrawerOpen(false)}
-            >
+            <button type="button" className="btn btn--primary btn--full search-filter-apply" onClick={() => setIsDrawerOpen(false)}>
               この条件で検索する
             </button>
-            <button
-              type="button"
-              className="btn btn--outline btn--full search-filter-clear"
-              onClick={clearFilters}
-              disabled={activeChips.length === 0}
-            >
+            <button type="button" className="btn btn--outline btn--full search-filter-clear" onClick={clearFilters} disabled={activeChips.length === 0}>
               条件をクリア
             </button>
           </div>
@@ -223,12 +276,18 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
         <header className="search-hero">
           <div>
             <h1>産後ケア施設を探す</h1>
-            <p>宿泊型・通所型・訪問型から、あなたに合ったケアが見つかります。</p>
+            <p>福岡エリアの宿泊型・通所型施設から、あなたに合ったケアを探せます。</p>
           </div>
           <Link className="search-hero__cta" href="/#subsidy">
             💰 公費助成シミュレーターで自己負担額をチェック <span aria-hidden="true">→</span>
           </Link>
         </header>
+
+        {residenceOutside && (
+          <p className="search-results-notice" role="status">
+            お住まいの自治体の助成制度は各自治体にご確認ください
+          </p>
+        )}
 
         <div className="search-results-header">
           <p className="facility-count" aria-live="polite">
@@ -236,16 +295,9 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           </p>
           <div className="search-sort">
             <label htmlFor="facility-sort">並び替え</label>
-            <select
-              id="facility-sort"
-              className="filter-select"
-              value={sort}
-              onChange={(event) => setSort(event.target.value as SortMode)}
-            >
-              <option value="recommend">おすすめ順</option>
-              <option value="rating">評価が高い順</option>
-              <option value="price-asc">料金が安い順</option>
-              <option value="price-desc">料金が高い順</option>
+            <select id="facility-sort" className="filter-select" value={sort} onChange={(event) => setSort(event.target.value as SortMode)}>
+              <option value="recommend">掲載順</option>
+              <option value="name">施設名順</option>
             </select>
           </div>
         </div>
@@ -254,13 +306,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           {activeChips.map((chip) => (
             <span className="search-chip" key={`${chip.kind}-${chip.value}`}>
               {chip.value}
-              <button
-                type="button"
-                aria-label={`${chip.value}の条件を外す`}
-                onClick={() => removeChip(chip.kind, chip.value)}
-              >
-                ✕
-              </button>
+              <button type="button" aria-label={`${chip.value}の条件を外す`} onClick={() => removeChip(chip.kind, chip.value)}>✕</button>
             </span>
           ))}
         </div>
@@ -274,6 +320,11 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           <section className="facility-grid" aria-label="施設一覧">
             {sorted.map((facility) => {
               const isFavorite = favorites.has(facility.id);
+              const price = getPriceDisplay(facility, {
+                subsidyOn,
+                freeMode,
+                residenceOutside,
+              });
               return (
                 <article className="facility-card" key={facility.id}>
                   <div className={`facility-card__img search-photo--${facility.photoVariant}`}>
@@ -292,23 +343,28 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
                     </button>
                   </div>
                   <div className="facility-card__body">
-                    <span className={`facility-card__type search-care-type--${facility.careType}`}>{facility.careType}</span>
-                    <h2 className="facility-card__name">{facility.name}</h2>
-                    <p className="facility-card__location">📍 {facility.addressDetail}</p>
-                    <div className="facility-card__rating">
-                      <StarRating rating={facility.rating} />
-                      <span className="rating-stars__count">（{facility.reviewCount}件）</span>
+                    <div className="facility-card__types">
+                      {facility.careTypes.map((careType) => (
+                        <span className={`facility-card__type search-care-type--${careType}`} key={careType}>
+                          {careType}
+                        </span>
+                      ))}
                     </div>
+                    <h2 className="facility-card__name">{facility.name}</h2>
+                    <p className="facility-card__location">📍 福岡県{facility.addressDetail}</p>
+                    <p className="facility-card__age"><span>対象月齢</span> {facility.ageLimit}</p>
+                    <FacilityContact facility={facility} />
                     <div className="tags">
                       {facility.features.map((feature) => (
                         <span className="tag" key={feature}>{feature}</span>
                       ))}
+                      {effectiveFreeMode && !facility.isInFukuokaCity && (
+                        <span className="tag tag--self-pay">公費対象外（自費）</span>
+                      )}
                     </div>
                     <div className="facility-card__footer">
-                      <p className="facility-card__price">
-                        <small>{facility.priceUnit}</small>{" "}
-                        <strong>¥{facility.price.toLocaleString()}</strong>
-                        <small>〜{facility.subsidyApplicable ? "（助成適用時）" : ""}</small>
+                      <p className={`facility-card__price${price.isInquiry ? " is-inquiry" : ""}`}>
+                        {price.label}
                       </p>
                       <Link href={`/facility/${facility.id}`} className="btn btn--primary btn--sm facility-card__detail-btn">
                         詳細を見る
@@ -322,13 +378,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
         )}
       </div>
 
-      <button
-        type="button"
-        className="search-drawer-toggle"
-        aria-controls="search-filter-sidebar"
-        aria-expanded={isDrawerOpen}
-        onClick={() => setIsDrawerOpen(true)}
-      >
+      <button type="button" className="search-drawer-toggle" aria-controls="search-filter-sidebar" aria-expanded={isDrawerOpen} onClick={() => setIsDrawerOpen(true)}>
         🔍 条件をしぼる
       </button>
     </div>

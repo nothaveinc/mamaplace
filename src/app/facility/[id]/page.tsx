@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SubpageHero from "@/components/SubpageHero";
 import { facilities, getFacilityById } from "@/data/facilities";
+import { getPriceDisplay } from "@/data/fukuokaSubsidy";
 
 type Params = { id: string };
 
@@ -10,20 +11,27 @@ export function generateStaticParams(): Params[] {
   return facilities.map((facility) => ({ id: facility.id }));
 }
 
-function StarRating({ rating }: { rating: number }) {
-  const rounded = Math.round(rating);
+function ContactDetails({
+  contact,
+}: {
+  contact: { phone?: string; note?: string };
+}) {
+  const url = contact.note?.match(/https?:\/\/[^\s）)]+/)?.[0];
+
   return (
-    <div className="rating-stars">
-      {[1, 2, 3, 4, 5].map((n) => (
-        <span
-          key={n}
-          className={`rating-stars__star${n > rounded ? " empty" : ""}`}
-        >
-          ★
-        </span>
-      ))}
-      <span className="rating-stars__score">{rating.toFixed(1)}</span>
-    </div>
+    <span>
+      {contact.phone && <a href={`tel:${contact.phone}`}>{contact.phone}</a>}
+      {contact.phone && contact.note && <br />}
+      {contact.note && url ? (
+        <>
+          {contact.note.split(url)[0]}
+          <a href={url} target="_blank" rel="noreferrer">{url}</a>
+          {contact.note.split(url)[1]}
+        </>
+      ) : (
+        contact.note
+      )}
+    </span>
   );
 }
 
@@ -65,12 +73,12 @@ export default async function FacilityDetailPage({
       addressRegion: facility.prefecture,
       addressLocality: facility.addressDetail,
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: facility.rating,
-      reviewCount: facility.reviewCount,
-    },
   };
+  const price = getPriceDisplay(facility, {
+    subsidyOn: true,
+    freeMode: false,
+    residenceOutside: !facility.isInFukuokaCity,
+  });
 
   return (
     <>
@@ -94,17 +102,17 @@ export default async function FacilityDetailPage({
             </div>
 
             <div className="facility-detail__body">
-              <span className="facility-detail__type">{facility.careType}</span>
+              <div className="facility-detail__types">
+                {facility.careTypes.map((careType) => (
+                  <span className="facility-detail__type" key={careType}>
+                    {careType}
+                  </span>
+                ))}
+              </div>
               <p className="facility-detail__location">
                 📍 {facility.prefecture}
                 {facility.addressDetail}
               </p>
-              <div className="facility-detail__rating">
-                <StarRating rating={facility.rating} />
-                <span className="rating-stars__count">
-                  （{facility.reviewCount}件）
-                </span>
-              </div>
               <div className="tags">
                 {facility.features.map((feat) => (
                   <span
@@ -117,10 +125,8 @@ export default async function FacilityDetailPage({
                   </span>
                 ))}
               </div>
-              <p className="facility-detail__price">
-                <small>{facility.priceUnit}</small>{" "}
-                <strong>¥{facility.price.toLocaleString()}</strong>
-                {facility.subsidyApplicable && <small>〜（助成適用時）</small>}
+              <p className={`facility-detail__price${price.isInquiry ? " is-inquiry" : ""}`}>
+                {price.label}
               </p>
               <div className="facility-detail__actions">
                 <Link href="/search" className="btn btn--outline">
@@ -142,12 +148,12 @@ export default async function FacilityDetailPage({
             <h2>基本情報</h2>
             <div className="facility-detail__meta-list">
               <div className="facility-detail__meta-row">
-                <span className="facility-detail__meta-label">アクセス</span>
-                <span>{facility.access}</span>
+                <span className="facility-detail__meta-label">対象月齢</span>
+                <span>{facility.ageLimit}</span>
               </div>
               <div className="facility-detail__meta-row">
-                <span className="facility-detail__meta-label">営業時間</span>
-                <span>{facility.hours}</span>
+                <span className="facility-detail__meta-label">連絡先</span>
+                <ContactDetails contact={facility.contact} />
               </div>
             </div>
           </section>
@@ -155,19 +161,7 @@ export default async function FacilityDetailPage({
           <section className="facility-detail__section">
             <h2>口コミ</h2>
             <div className="review-list">
-              {facility.reviews.map((review, i) => (
-                <div className="review-item" key={i}>
-                  <div className="review-item__header">
-                    <span className="review-item__avatar">👤</span>
-                    <div className="review-item__meta">
-                      <p className="review-item__name">{review.name}</p>
-                      <p className="review-item__date">{review.date}</p>
-                    </div>
-                    <StarRating rating={review.rating} />
-                  </div>
-                  <p className="review-item__text">{review.text}</p>
-                </div>
-              ))}
+              <p className="review-placeholder">レビュー準備中です。</p>
             </div>
           </section>
 

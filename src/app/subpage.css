@@ -385,6 +385,15 @@
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
+.search-results-notice {
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--search-line);
+  border-radius: 10px;
+  background: var(--color-surface2);
+  color: var(--color-text-medium);
+  font-size: 13px;
+}
 .search-results-header .facility-count { margin: 0; font-size: 14px; }
 .search-results-header .facility-count strong {
   margin: 0 4px;
@@ -442,9 +451,15 @@
 .search-favorite:hover { color: var(--color-primary-dark); transform: scale(1.12); }
 .search-favorite.is-favorite { color: var(--color-primary-dark); }
 .search-page .facility-card__body { gap: 0; padding: 16px 18px 18px; }
+.search-page .facility-card__types,
+.facility-detail__types {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
 .search-page .facility-card__type {
   align-self: flex-start;
-  margin-bottom: 8px;
   padding: 3px 11px;
   border-radius: var(--radius-full);
   font-size: 11px;
@@ -456,9 +471,36 @@
 .search-page .search-care-type--訪問型 { background: #e9eef6; color: #4e6a9c; }
 .search-page .facility-card__name { margin-bottom: 4px; font-family: var(--font-serif); font-size: 16.5px; }
 .search-page .facility-card__location { margin-bottom: 8px; font-size: 12.5px; }
+.search-page .facility-card__age,
+.search-page .facility-card__contact {
+  margin: 0 0 8px;
+  color: var(--color-text-medium);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.search-page .facility-card__age span,
+.search-page .facility-card__contact > span {
+  margin-right: 6px;
+  color: var(--color-text-dark);
+  font-weight: 700;
+}
+.search-page .facility-card__contact {
+  display: flex;
+  align-items: flex-start;
+}
+.search-page .facility-card__contact a,
+.facility-detail__meta-row a {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
 .search-page .facility-card__rating { margin-bottom: 10px; }
 .search-page .tags { gap: 6px; margin-bottom: 14px; }
 .search-page .tag { padding: 3px 10px; background: var(--color-surface2); color: var(--color-text-medium); font-size: 11px; }
+.search-page .tag--self-pay {
+  background: #f7ece3;
+  color: #8b5a32;
+}
 .search-page .facility-card__footer {
   align-items: flex-end;
   flex-wrap: nowrap;
@@ -466,7 +508,8 @@
   padding: 12px 0 0;
   border-top: 1px dashed var(--search-line);
 }
-.search-page .facility-card__price { margin: 0; font-size: 12px; font-weight: 400; }
+.search-page .facility-card__price { margin: 0; color: var(--color-primary-dark); font-size: 12px; font-weight: 700; line-height: 1.55; }
+.search-page .facility-card__price.is-inquiry { color: var(--color-text-medium); font-weight: 400; }
 .search-page .facility-card__price strong { color: var(--color-primary-dark); font-family: var(--font-serif); font-size: 19px; }
 .search-page .facility-card__price small { font-size: 11px; font-weight: 400; }
 .search-page .facility-card__detail-btn { align-self: auto; margin: 0; padding: 8px 16px; font-size: 12.5px; }
@@ -573,7 +616,9 @@
 .facility-detail__body { flex: 1; min-width: 240px; }
 .facility-detail__type {
   display: inline-block;
-  margin-bottom: 8px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface2);
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--color-primary-dark);
@@ -592,6 +637,17 @@
 .facility-detail__price {
   margin: 16px 0;
   font-size: 0.85rem;
+  color: var(--color-text-medium);
+}
+.facility-detail__price:not(.is-inquiry) {
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+.review-placeholder {
+  margin: 0;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface2);
   color: var(--color-text-medium);
 }
 .facility-detail__price strong {
