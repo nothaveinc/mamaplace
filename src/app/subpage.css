@@ -628,12 +628,6 @@
   font-size: 0.9rem;
   margin: 4px 0 10px;
 }
-.facility-detail__rating {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
-}
 .facility-detail__price {
   margin: 16px 0;
   font-size: 0.85rem;

@@ -3,13 +3,6 @@ import type { CareType } from "./subsidy";
 export type Availability = "ok" | "few";
 export type PhotoVariant = "a" | "b" | "c";
 
-export type Review = {
-  name: string;
-  date: string;
-  rating: number;
-  text: string;
-};
-
 export type Facility = {
   id: string;
   name: string;
@@ -24,9 +17,6 @@ export type Facility = {
     phone?: string;
     note?: string;
   };
-  rating?: number;
-  reviewCount?: number;
-  reviews?: Review[];
   features: string[];
   subsidyApplicable: boolean;
   selfPayPriceLabel?: string;
@@ -34,8 +24,6 @@ export type Facility = {
   icon: string;
   photoVariant: PhotoVariant;
   description: string;
-  access: string;
-  hours: string;
 };
 
 export const AREAS = [
@@ -80,12 +68,10 @@ export const CARE_TYPE_OPTIONS: CareType[] = ["宿泊型", "通所型", "訪問�
 
 export const FEATURE_OPTIONS = ["公費助成対象", "自費プランあり"] as const;
 
-type FacilitySource = Omit<Facility, "prefecture" | "isHotelResort" | "subsidyApplicable" | "availability" | "description" | "access" | "hours"> & {
+type FacilitySource = Omit<Facility, "prefecture" | "isHotelResort" | "subsidyApplicable" | "availability" | "description"> & {
   isHotelResort?: boolean;
   subsidyApplicable?: boolean;
 };
-
-const CONTACT_PLACEHOLDER = "詳細・ご予約は施設へ直接お問い合わせください。";
 
 function createFacility(source: FacilitySource): Facility {
   return {
@@ -95,8 +81,6 @@ function createFacility(source: FacilitySource): Facility {
     subsidyApplicable: source.subsidyApplicable ?? true,
     availability: "ok",
     description: `${source.ward}にある産後ケア施設です。${source.careTypes.join("・")}に対応しています。`,
-    access: CONTACT_PLACEHOLDER,
-    hours: CONTACT_PLACEHOLDER,
   };
 }
 
