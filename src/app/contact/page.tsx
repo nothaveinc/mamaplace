@@ -6,7 +6,7 @@ import ContactForm from "@/components/ContactForm";
 export const metadata: Metadata = {
   title: "お問い合わせ",
   description:
-    "産後ケアナビへのお問い合わせはこちらから。施設情報・公費助成・施設掲載についてのご質問を受け付けています。",
+    "MamaPlaceへのお問い合わせはこちらから。施設情報・公費助成・施設掲載についてのご質問を受け付けています。",
   alternates: { canonical: "/contact" },
 };
 

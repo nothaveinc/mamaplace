@@ -6,16 +6,16 @@ import "./style.css";
 import "./subpage.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sango-care-navi.jp"),
+  metadataBase: new URL("https://mama-place.com"),
   title: {
-    default: "産後ケアナビ｜公費助成・施設マッチング",
-    template: "%s｜産後ケアナビ",
+    default: "MamaPlace｜公費助成・施設マッチング",
+    template: "%s｜MamaPlace",
   },
   description:
     "産後のお母さんへ。公費助成シミュレーターと産後ケア施設マッチングを無料提供。住所と月齢を入力するだけで、あなたに最適なケアと助成額を即座にご提案。全国47都道府県・500施設以上対応。",
   openGraph: {
     type: "website",
-    siteName: "産後ケアナビ",
+    siteName: "MamaPlace",
     locale: "ja_JP",
   },
   twitter: {

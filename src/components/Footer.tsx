@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer__grid">
           <div className="footer__brand">
-            <p className="footer__logo">産後ケアナビ</p>
+            <p className="footer__logo">MamaPlace</p>
             <p className="footer__tagline">産後のあなたへ、最適なケアを。</p>
             <p className="footer__note">
               ※本サービスは医療行為の提供ではありません。
@@ -55,7 +55,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer__bottom">
-          <p>© 2026 産後ケアナビ. All rights reserved.</p>
+          <p>© 2026 MamaPlace. All rights reserved.</p>
         </div>
       </div>
     </footer>

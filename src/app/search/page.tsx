@@ -15,7 +15,7 @@ const itemListJsonLd = {
   itemListElement: facilities.map((f, i) => ({
     "@type": "ListItem",
     position: i + 1,
-    url: `https://sango-care-navi.jp/facility/${f.id}`,
+    url: `https://mama-place.com/facility/${f.id}`,
     name: f.name,
   })),
 };

@@ -36,7 +36,7 @@ export default function Nav() {
     <nav className={`nav${scrolled ? " nav--scrolled" : ""}`} id="nav">
       <div className="nav__inner">
         <Link href="/" className="nav__logo">
-          産後ケアナビ
+          MamaPlace
         </Link>
         <ul className="nav__links">
           {links.map((link) => (

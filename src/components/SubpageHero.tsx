@@ -14,13 +14,13 @@ export default function SubpageHero({ title, path }: Props) {
         "@type": "ListItem",
         position: 1,
         name: "ホーム",
-        item: "https://sango-care-navi.jp/",
+        item: "https://mama-place.com/",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: title,
-        item: `https://sango-care-navi.jp${path}`,
+        item: `https://mama-place.com${path}`,
       },
     ],
   };

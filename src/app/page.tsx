@@ -7,31 +7,31 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://sango-care-navi.jp/#website",
-      url: "https://sango-care-navi.jp/",
-      name: "産後ケアナビ",
+      "@id": "https://mama-place.com/#website",
+      url: "https://mama-place.com/",
+      name: "MamaPlace",
       description:
         "産後のお母さんが最適なケアを受けられるよう、公費助成シミュレーターと施設マッチングを無料提供するWebプラットフォーム",
       inLanguage: "ja",
     },
     {
       "@type": "Organization",
-      "@id": "https://sango-care-navi.jp/#organization",
-      url: "https://sango-care-navi.jp/",
-      name: "産後ケアナビ",
+      "@id": "https://mama-place.com/#organization",
+      url: "https://mama-place.com/",
+      name: "MamaPlace",
       description: "医療×美容の視点で、産後ケアの質を届けるWebプラットフォーム",
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer service",
-        url: "https://sango-care-navi.jp/contact",
+        url: "https://mama-place.com/contact",
         availableLanguage: "Japanese",
       },
     },
     {
       "@type": "WebApplication",
-      "@id": "https://sango-care-navi.jp/#app",
-      name: "産後ケアナビ",
-      url: "https://sango-care-navi.jp/",
+      "@id": "https://mama-place.com/#app",
+      name: "MamaPlace",
+      url: "https://mama-place.com/",
       applicationCategory: "HealthApplication",
       description: "公費助成シミュレーターと産後ケア施設マッチングを無料で提供",
       offers: {
@@ -185,7 +185,7 @@ export default function Home() {
                 産後ケアの質を届ける
               </h2>
               <p className="about__text">
-                産後ケアナビは、美容皮膚科でのマネジメント経験を持つ専門家チームが運営しています。医療の専門性と、患者さんへの細やかな配慮を両立した視点で、各施設のケアの質を独自に評価しています。
+                MamaPlaceは、美容皮膚科でのマネジメント経験を持つ専門家チームが運営しています。医療の専門性と、患者さんへの細やかな配慮を両立した視点で、各施設のケアの質を独自に評価しています。
               </p>
               <p className="about__text">
                 産後のお母さんが、本当に必要なケアに出会えるよう、情報の透明性と使いやすさを追求し続けています。

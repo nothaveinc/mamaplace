@@ -6,7 +6,7 @@ import FaqAccordion, { type FaqCategory } from "@/components/FaqAccordion";
 export const metadata: Metadata = {
   title: "よくある質問",
   description:
-    "産後ケアナビのよくある質問。サービスの使い方、公費助成、施設情報についてお答えします。",
+    "MamaPlaceのよくある質問。サービスの使い方、公費助成、施設情報についてお答えします。",
   alternates: { canonical: "/faq" },
 };
 
@@ -16,9 +16,9 @@ const categories: FaqCategory[] = [
     title: "サービスについて",
     items: [
       {
-        question: "産後ケアナビはどんなサービスですか？",
+        question: "MamaPlaceはどんなサービスですか？",
         answer:
-          "産後ケアナビは、産後のお母さんが最適なケアを受けられるよう、公費助成シミュレーターと施設マッチングを無料で提供するWebプラットフォームです。",
+          "MamaPlaceは、産後のお母さんが最適なケアを受けられるよう、公費助成シミュレーターと施設マッチングを無料で提供するWebプラットフォームです。",
       },
       {
         question: "利用料金はかかりますか？",
