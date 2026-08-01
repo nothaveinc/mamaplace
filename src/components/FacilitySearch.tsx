@@ -110,7 +110,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
     const list = facilities.filter((facility) => {
       if (residence === "福岡市" && !facility.isInFukuokaCity) return false;
       if (residence === "福岡市外" && facility.isInFukuokaCity) return false;
-      if (!freeMode && !facility.subsidyApplicable) return false;
+      if (freeMode && facility.subsidyApplicable) return false;
       if (subsidyOn && !facility.subsidyApplicable) return false;
       if (
         area &&
@@ -225,7 +225,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
               />
               <span className="search-check-item__box" aria-hidden="true" />
               <span className="search-check-item__label">
-                自由に見る（完全自費・ホテルプラン含む）
+                補助金対象外（ホテル・リゾート）
               </span>
             </label>
           </div>
