@@ -70,7 +70,8 @@ function FacilityContact({ facility }: { facility: Facility }) {
 
 export default function FacilitySearch({ facilities }: { facilities: Facility[] }) {
   const [residence, setResidence] = useState<Residence>("");
-  const [subsidyOn, setSubsidyOn] = useState(true);
+  const [subsidyOn, setSubsidyOn] = useState(false);
+  const [subsidyFilterError, setSubsidyFilterError] = useState(false);
   const [freeMode, setFreeMode] = useState(false);
   const [area, setArea] = useState("");
   const [types, setTypes] = useState<CareType[]>([]);
@@ -78,6 +79,22 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
   const [sort, setSort] = useState<SortMode>("recommend");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
+
+  const handleSubsidyFilterChange = (checked: boolean) => {
+    if (checked && residence === "") {
+      setSubsidyFilterError(true);
+      return;
+    }
+    setSubsidyFilterError(false);
+    setSubsidyOn(checked);
+  };
+
+  useEffect(() => {
+    if (residence === "") {
+      setSubsidyOn(false);
+      setSubsidyFilterError(false);
+    }
+  }, [residence]);
 
   useEffect(() => {
     if (!isDrawerOpen) return;
@@ -94,6 +111,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
       if (residence === "福岡市" && !facility.isInFukuokaCity) return false;
       if (residence === "福岡市外" && facility.isInFukuokaCity) return false;
       if (!freeMode && !facility.subsidyApplicable) return false;
+      if (subsidyOn && !facility.subsidyApplicable) return false;
       if (
         area &&
         (area === HOTEL_RESORT_AREA
@@ -115,7 +133,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
       list.sort((a, b) => a.name.localeCompare(b.name, "ja"));
     }
     return list;
-  }, [facilities, residence, freeMode, area, types, features, sort]);
+  }, [facilities, residence, freeMode, subsidyOn, area, types, features, sort]);
 
   const clearFilters = () => {
     setArea("");
@@ -189,11 +207,16 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
               <input
                 type="checkbox"
                 checked={subsidyOn}
-                onChange={(event) => setSubsidyOn(event.target.checked)}
+                onChange={(event) => handleSubsidyFilterChange(event.target.checked)}
               />
               <span className="search-check-item__box" aria-hidden="true" />
-              <span className="search-check-item__label">福岡市の補助金を利用する</span>
+              <span className="search-check-item__label">補助金対象施設</span>
             </label>
+            {subsidyFilterError && (
+              <p className="search-check-error" role="alert">
+                居住地を選択してください
+              </p>
+            )}
             <label className="search-check-item">
               <input
                 type="checkbox"
