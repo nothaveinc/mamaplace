@@ -70,6 +70,7 @@ function FacilityContact({ facility }: { facility: Facility }) {
 
 export default function FacilitySearch({ facilities }: { facilities: Facility[] }) {
   const [residence, setResidence] = useState<Residence>("");
+  const [subsidyOn, setSubsidyOn] = useState(true);
   const [freeMode, setFreeMode] = useState(false);
   const [area, setArea] = useState("");
   const [types, setTypes] = useState<CareType[]>([]);
@@ -187,12 +188,21 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
             <label className="search-check-item">
               <input
                 type="checkbox"
+                checked={subsidyOn}
+                onChange={(event) => setSubsidyOn(event.target.checked)}
+              />
+              <span className="search-check-item__box" aria-hidden="true" />
+              <span className="search-check-item__label">福岡市の補助金を利用する</span>
+            </label>
+            <label className="search-check-item">
+              <input
+                type="checkbox"
                 checked={freeMode}
                 onChange={(event) => setFreeMode(event.target.checked)}
               />
               <span className="search-check-item__box" aria-hidden="true" />
               <span className="search-check-item__label">
-                自費プラン・ホテルプランも含めて表示する
+                自由に見る（完全自費・ホテルプラン含む）
               </span>
             </label>
           </div>
@@ -282,14 +292,9 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           </Link>
         </header>
 
-        {residence === "" && (
+        {residence === "福岡市外" && (
           <p className="search-results-notice" role="status">
-            居住地を選択すると、公費自己負担額の目安が表示されます
-          </p>
-        )}
-        {freeMode && (
-          <p className="search-results-notice" role="status">
-            公費対象外の施設（自費プラン・ホテルプラン）も含めて表示しています。料金や助成の可否は各施設・自治体へご確認ください
+            お住まいの自治体の助成制度は各自治体にご確認ください
           </p>
         )}
 
@@ -324,7 +329,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           <section className="facility-grid" aria-label="施設一覧">
             {sorted.map((facility) => {
               const isFavorite = favorites.has(facility.id);
-              const price = getPriceDisplay(facility, { residence });
+              const price = getPriceDisplay(facility, { residence, subsidyOn, freeMode });
               return (
                 <article className="facility-card" key={facility.id}>
                   <div className={`facility-card__img search-photo--${facility.photoVariant}`}>
