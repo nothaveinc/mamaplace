@@ -41,7 +41,7 @@ export function getPriceDisplay(
     };
   }
 
-  if (residence !== "福岡市" || !facility.isInFukuokaCity) {
+  if (residence !== "福岡市" || !facility.subsidyApplicable) {
     return {
       label: "実費は施設へお問い合わせください",
       isInquiry: true,

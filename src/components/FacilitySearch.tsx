@@ -108,8 +108,8 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
 
   const sorted = useMemo(() => {
     const list = facilities.filter((facility) => {
-      if (residence === "福岡市" && !facility.isInFukuokaCity) return false;
-      if (residence === "福岡市外" && facility.isInFukuokaCity) return false;
+      if (residence === "福岡市" && !facility.subsidyApplicable) return false;
+      if (residence === "福岡市外" && facility.subsidyApplicable) return false;
       if (facilityFilter === "subsidy" && !facility.subsidyApplicable) return false;
       if (facilityFilter === "non-subsidy" && facility.subsidyApplicable) return false;
       if (

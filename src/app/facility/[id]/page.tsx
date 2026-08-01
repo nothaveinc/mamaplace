@@ -75,7 +75,7 @@ export default async function FacilityDetailPage({
     },
   };
   const price = getPriceDisplay(facility, {
-    residence: facility.isInFukuokaCity ? "福岡市" : "施設所在地外",
+    residence: facility.subsidyApplicable ? "福岡市" : "施設所在地外",
   });
 
   return (
