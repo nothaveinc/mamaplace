@@ -7,6 +7,7 @@ import {
   CARE_TYPE_OPTIONS,
   FEATURE_OPTIONS,
   HOTEL_RESORT_AREA,
+  fetchFacilities,
   type Facility,
 } from "@/data/facilities";
 import { getPriceDisplay } from "@/data/fukuokaSubsidy";
@@ -69,7 +70,8 @@ function FacilityContact({ facility }: { facility: Facility }) {
   );
 }
 
-export default function FacilitySearch({ facilities }: { facilities: Facility[] }) {
+export default function FacilitySearch({ initialFacilities }: { initialFacilities: Facility[] }) {
+  const [facilities, setFacilities] = useState<Facility[]>(initialFacilities);
   const [residence, setResidence] = useState<Residence>("");
   const [facilityFilter, setFacilityFilter] = useState<FacilityFilter>("all");
   const [subsidyFilterError, setSubsidyFilterError] = useState(false);
@@ -88,6 +90,22 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
     setSubsidyFilterError(false);
     setFacilityFilter(value);
   };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchFacilities()
+      .then((fresh) => {
+        if (!cancelled) setFacilities(fresh);
+      })
+      .catch(() => {
+        // 取得に失敗した場合はビルド時点の初期データをそのまま表示する
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (residence === "") {

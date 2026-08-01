@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import FacilitySearch from "@/components/FacilitySearch";
-import { facilities } from "@/data/facilities";
+import { fetchFacilities } from "@/data/facilities";
 
 export const metadata: Metadata = {
   title: "施設を探す",
@@ -9,25 +9,27 @@ export const metadata: Metadata = {
   alternates: { canonical: "/search" },
 };
 
-const itemListJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  itemListElement: facilities.map((f, i) => ({
-    "@type": "ListItem",
-    position: i + 1,
-    url: `https://mama-place.com/facility/${f.id}`,
-    name: f.name,
-  })),
-};
+export default async function SearchPage() {
+  const facilities = await fetchFacilities();
 
-export default function SearchPage() {
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: facilities.map((f, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://mama-place.com/facility/${f.id}`,
+      name: f.name,
+    })),
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
-      <FacilitySearch facilities={facilities} />
+      <FacilitySearch initialFacilities={facilities} />
     </>
   );
 }
