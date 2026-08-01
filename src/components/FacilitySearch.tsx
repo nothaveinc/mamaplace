@@ -7,14 +7,13 @@ import {
   CARE_TYPE_OPTIONS,
   FEATURE_OPTIONS,
   HOTEL_RESORT_AREA,
-  RESIDENCE_MUNICIPALITIES,
-  getMunicipality,
   type Facility,
 } from "@/data/facilities";
 import { getPriceDisplay } from "@/data/fukuokaSubsidy";
 import type { CareType } from "@/data/subsidy";
 
 type SortMode = "recommend" | "name";
+type Residence = "" | "福岡市" | "福岡市外";
 
 const AVAILABILITY_LABEL: Record<Facility["availability"], string> = {
   ok: "空きあり",
@@ -70,7 +69,7 @@ function FacilityContact({ facility }: { facility: Facility }) {
 }
 
 export default function FacilitySearch({ facilities }: { facilities: Facility[] }) {
-  const [residence, setResidence] = useState<string>("");
+  const [residence, setResidence] = useState<Residence>("");
   const [freeMode, setFreeMode] = useState(false);
   const [area, setArea] = useState("");
   const [types, setTypes] = useState<CareType[]>([]);
@@ -91,9 +90,8 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
 
   const sorted = useMemo(() => {
     const list = facilities.filter((facility) => {
-      if (residence !== "" && getMunicipality(facility.ward) !== residence) {
-        return false;
-      }
+      if (residence === "福岡市" && !facility.isInFukuokaCity) return false;
+      if (residence === "福岡市外" && facility.isInFukuokaCity) return false;
       if (!freeMode && !facility.subsidyApplicable) return false;
       if (
         area &&
@@ -177,14 +175,11 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
               id="search-residence"
               className="filter-select"
               value={residence}
-              onChange={(event) => setResidence(event.target.value)}
+              onChange={(event) => setResidence(event.target.value as Residence)}
             >
               <option value="">選択してください</option>
-              {RESIDENCE_MUNICIPALITIES.map((municipality) => (
-                <option key={municipality} value={municipality}>
-                  {municipality}
-                </option>
-              ))}
+              <option value="福岡市">福岡市</option>
+              <option value="福岡市外">福岡市外</option>
             </select>
           </div>
 
