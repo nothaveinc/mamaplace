@@ -328,6 +328,22 @@
   opacity: 0;
   transform: rotate(-45deg) translate(0, -1px);
 }
+.search-check-item__box--radio {
+  border-radius: 50%;
+}
+.search-check-item__box--radio::after {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  transform: none;
+}
+.search-check-error {
+  color: #d64545;
+  font-size: 13px;
+  margin: -2px 0 0;
+}
 .search-check-item input:checked + .search-check-item__box {
   border-color: var(--color-primary-dark);
   background: var(--color-primary-dark);

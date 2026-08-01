@@ -14,6 +14,7 @@ import type { CareType } from "@/data/subsidy";
 
 type SortMode = "recommend" | "name";
 type Residence = "" | "福岡市" | "福岡市外";
+type FacilityFilter = "all" | "subsidy" | "non-subsidy";
 
 const AVAILABILITY_LABEL: Record<Facility["availability"], string> = {
   ok: "空きあり",
@@ -70,9 +71,8 @@ function FacilityContact({ facility }: { facility: Facility }) {
 
 export default function FacilitySearch({ facilities }: { facilities: Facility[] }) {
   const [residence, setResidence] = useState<Residence>("");
-  const [subsidyOn, setSubsidyOn] = useState(false);
+  const [facilityFilter, setFacilityFilter] = useState<FacilityFilter>("all");
   const [subsidyFilterError, setSubsidyFilterError] = useState(false);
-  const [freeMode, setFreeMode] = useState(false);
   const [area, setArea] = useState("");
   const [types, setTypes] = useState<CareType[]>([]);
   const [features, setFeatures] = useState<(typeof FEATURE_OPTIONS)[number][]>([]);
@@ -80,19 +80,19 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
 
-  const handleSubsidyFilterChange = (checked: boolean) => {
-    if (checked && residence === "") {
+  const handleFacilityFilterChange = (value: FacilityFilter) => {
+    if (value === "subsidy" && residence === "") {
       setSubsidyFilterError(true);
       return;
     }
     setSubsidyFilterError(false);
-    setSubsidyOn(checked);
+    setFacilityFilter(value);
   };
 
   useEffect(() => {
     if (residence === "") {
-      setSubsidyOn(false);
       setSubsidyFilterError(false);
+      setFacilityFilter((current) => (current === "subsidy" ? "all" : current));
     }
   }, [residence]);
 
@@ -110,8 +110,8 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
     const list = facilities.filter((facility) => {
       if (residence === "福岡市" && !facility.isInFukuokaCity) return false;
       if (residence === "福岡市外" && facility.isInFukuokaCity) return false;
-      if (freeMode && facility.subsidyApplicable) return false;
-      if (subsidyOn && !facility.subsidyApplicable) return false;
+      if (facilityFilter === "subsidy" && !facility.subsidyApplicable) return false;
+      if (facilityFilter === "non-subsidy" && facility.subsidyApplicable) return false;
       if (
         area &&
         (area === HOTEL_RESORT_AREA
@@ -133,7 +133,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
       list.sort((a, b) => a.name.localeCompare(b.name, "ja"));
     }
     return list;
-  }, [facilities, residence, freeMode, subsidyOn, area, types, features, sort]);
+  }, [facilities, residence, facilityFilter, area, types, features, sort]);
 
   const clearFilters = () => {
     setArea("");
@@ -202,33 +202,46 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
             </select>
           </div>
 
-          <div className="search-filter-group search-check-list">
-            <label className="search-check-item">
+          <fieldset className="search-filter-group search-check-list">
+            <legend className="filter-label">表示する施設</legend>
+            <label className="search-check-item search-check-item--radio">
               <input
-                type="checkbox"
-                checked={subsidyOn}
-                onChange={(event) => handleSubsidyFilterChange(event.target.checked)}
+                type="radio"
+                name="facility-filter"
+                checked={facilityFilter === "all"}
+                onChange={() => handleFacilityFilterChange("all")}
               />
-              <span className="search-check-item__box" aria-hidden="true" />
+              <span className="search-check-item__box search-check-item__box--radio" aria-hidden="true" />
+              <span className="search-check-item__label">全施設</span>
+            </label>
+            <label className="search-check-item search-check-item--radio">
+              <input
+                type="radio"
+                name="facility-filter"
+                checked={facilityFilter === "subsidy"}
+                onChange={() => handleFacilityFilterChange("subsidy")}
+              />
+              <span className="search-check-item__box search-check-item__box--radio" aria-hidden="true" />
               <span className="search-check-item__label">補助金対象施設</span>
             </label>
             {subsidyFilterError && (
               <p className="search-check-error" role="alert">
-                居住地を選択してください
+                ！居住地を選択してください
               </p>
             )}
-            <label className="search-check-item">
+            <label className="search-check-item search-check-item--radio">
               <input
-                type="checkbox"
-                checked={freeMode}
-                onChange={(event) => setFreeMode(event.target.checked)}
+                type="radio"
+                name="facility-filter"
+                checked={facilityFilter === "non-subsidy"}
+                onChange={() => handleFacilityFilterChange("non-subsidy")}
               />
-              <span className="search-check-item__box" aria-hidden="true" />
+              <span className="search-check-item__box search-check-item__box--radio" aria-hidden="true" />
               <span className="search-check-item__label">
-                補助金対象外（ホテル・リゾート）
+                補助金対象外施設（ホテル・リゾート）
               </span>
             </label>
-          </div>
+          </fieldset>
 
           <div className="filter-group search-filter-group">
             <label className="filter-label" htmlFor="search-area">
@@ -352,7 +365,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           <section className="facility-grid" aria-label="施設一覧">
             {sorted.map((facility) => {
               const isFavorite = favorites.has(facility.id);
-              const price = getPriceDisplay(facility, { residence, subsidyOn, freeMode });
+              const price = getPriceDisplay(facility, { residence });
               return (
                 <article className="facility-card" key={facility.id}>
                   <div className={`facility-card__img search-photo--${facility.photoVariant}`}>

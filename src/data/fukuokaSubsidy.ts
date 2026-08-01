@@ -12,8 +12,6 @@ export const FUKUOKA_CITY_COPAY: Record<
 
 export type PriceDisplayOptions = {
   residence: string; // "" = 未選択, "福岡市" = 福岡市在住, それ以外は他市町村在住
-  subsidyOn: boolean;
-  freeMode: boolean;
 };
 
 const CARE_TYPE_PRICE_LABEL: Record<CareType, string> = {
@@ -30,7 +28,7 @@ const CARE_TYPE_UNIT_LABEL: Record<CareType, string> = {
 
 export function getPriceDisplay(
   facility: Facility,
-  { residence, subsidyOn, freeMode }: PriceDisplayOptions,
+  { residence }: PriceDisplayOptions,
 ): { label: string; isInquiry: boolean } {
   if (!facility.subsidyApplicable && facility.selfPayPriceLabel) {
     return { label: facility.selfPayPriceLabel, isInquiry: false };
@@ -43,7 +41,7 @@ export function getPriceDisplay(
     };
   }
 
-  if (residence !== "福岡市" || freeMode || !subsidyOn || !facility.isInFukuokaCity) {
+  if (residence !== "福岡市" || !facility.isInFukuokaCity) {
     return {
       label: "実費は施設へお問い合わせください",
       isInquiry: true,
