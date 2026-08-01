@@ -7,3 +7,5 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## 開発ワークフロー
 
 この案件（産後ケアナビ改修）は、設計・タスク分解をClaude Codeで行い、実装はCodex CLIに委任する。Claude Codeは実装を直接書かず、delegate-to-codexスキル経由でCodexに投げ、生成された差分をレビューする形を基本とする。
+
+設計・提案を行う前に、対象ファイルの `git log` と `git diff`（HEAD比較）を確認し、既存実装の現状を正確に把握してから設計する。特にこのプロジェクトは部分実装が既にある場合があるため、関連ファイルのコミット履歴を必ず確認してから提案すること（過去に、未コミットの巻き戻し差分を既存実装だと誤認したまま設計を進めてしまい、手戻りが発生した）。
