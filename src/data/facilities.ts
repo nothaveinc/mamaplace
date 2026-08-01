@@ -62,6 +62,52 @@ export const AREAS = [
   "大牟田市",
 ] as const;
 
+export const RESIDENCE_MUNICIPALITIES = [
+  "福岡市",
+  "北九州市",
+  "糟屋郡志免町",
+  "春日市",
+  "糸島市",
+  "那珂川市",
+  "糟屋郡久山町",
+  "大野城市",
+  "筑紫野市",
+  "飯塚市",
+  "小郡市",
+  "古賀市",
+  "福津市",
+  "宗像市",
+  "田川郡福智町",
+  "田川市",
+  "中間市",
+  "久留米市",
+  "みやま市",
+  "宮若市",
+  "柳川市",
+  "八女市",
+  "大牟田市",
+] as const;
+
+const FUKUOKA_CITY_WARDS = [
+  "東区",
+  "博多区",
+  "中央区",
+  "南区",
+  "城南区",
+  "早良区",
+  "西区",
+] as const;
+
+export function getMunicipality(ward: string): string {
+  if ((FUKUOKA_CITY_WARDS as readonly string[]).includes(ward)) {
+    return "福岡市";
+  }
+  if (ward.startsWith("北九州市")) {
+    return "北九州市";
+  }
+  return ward;
+}
+
 export const HOTEL_RESORT_AREA = "全国（ホテル・リゾート）";
 
 export const CARE_TYPE_OPTIONS: CareType[] = ["宿泊型", "通所型", "訪問型"];

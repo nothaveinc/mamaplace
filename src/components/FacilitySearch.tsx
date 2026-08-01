@@ -7,13 +7,14 @@ import {
   CARE_TYPE_OPTIONS,
   FEATURE_OPTIONS,
   HOTEL_RESORT_AREA,
+  RESIDENCE_MUNICIPALITIES,
+  getMunicipality,
   type Facility,
 } from "@/data/facilities";
 import { getPriceDisplay } from "@/data/fukuokaSubsidy";
 import type { CareType } from "@/data/subsidy";
 
 type SortMode = "recommend" | "name";
-type Residence = "福岡市" | "福岡市外";
 
 const AVAILABILITY_LABEL: Record<Facility["availability"], string> = {
   ok: "空きあり",
@@ -69,8 +70,7 @@ function FacilityContact({ facility }: { facility: Facility }) {
 }
 
 export default function FacilitySearch({ facilities }: { facilities: Facility[] }) {
-  const [residence, setResidence] = useState<Residence>("福岡市");
-  const [subsidyOn, setSubsidyOn] = useState(true);
+  const [residence, setResidence] = useState<string>("");
   const [freeMode, setFreeMode] = useState(false);
   const [area, setArea] = useState("");
   const [types, setTypes] = useState<CareType[]>([]);
@@ -78,9 +78,6 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
   const [sort, setSort] = useState<SortMode>("recommend");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
-
-  const residenceOutside = residence === "福岡市外";
-  const effectiveFreeMode = residenceOutside || freeMode;
 
   useEffect(() => {
     if (!isDrawerOpen) return;
@@ -94,7 +91,10 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
 
   const sorted = useMemo(() => {
     const list = facilities.filter((facility) => {
-      if (!effectiveFreeMode && !facility.isInFukuokaCity) return false;
+      if (residence !== "" && getMunicipality(facility.ward) !== residence) {
+        return false;
+      }
+      if (!freeMode && !facility.subsidyApplicable) return false;
       if (
         area &&
         (area === HOTEL_RESORT_AREA
@@ -116,7 +116,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
       list.sort((a, b) => a.name.localeCompare(b.name, "ja"));
     }
     return list;
-  }, [facilities, effectiveFreeMode, area, types, features, sort]);
+  }, [facilities, residence, freeMode, area, types, features, sort]);
 
   const clearFilters = () => {
     setArea("");
@@ -177,23 +177,18 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
               id="search-residence"
               className="filter-select"
               value={residence}
-              onChange={(event) => setResidence(event.target.value as Residence)}
+              onChange={(event) => setResidence(event.target.value)}
             >
-              <option value="福岡市">福岡市</option>
-              <option value="福岡市外">福岡市外</option>
+              <option value="">選択してください</option>
+              {RESIDENCE_MUNICIPALITIES.map((municipality) => (
+                <option key={municipality} value={municipality}>
+                  {municipality}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="search-filter-group search-check-list">
-            <label className="search-check-item">
-              <input
-                type="checkbox"
-                checked={subsidyOn}
-                onChange={(event) => setSubsidyOn(event.target.checked)}
-              />
-              <span className="search-check-item__box" aria-hidden="true" />
-              <span className="search-check-item__label">福岡市の補助金を利用する</span>
-            </label>
             <label className="search-check-item">
               <input
                 type="checkbox"
@@ -202,7 +197,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
               />
               <span className="search-check-item__box" aria-hidden="true" />
               <span className="search-check-item__label">
-                自由に見る（完全自費・ホテルプラン含む）
+                自費プラン・ホテルプランも含めて表示する
               </span>
             </label>
           </div>
@@ -292,9 +287,14 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           </Link>
         </header>
 
-        {residenceOutside && (
+        {residence === "" && (
           <p className="search-results-notice" role="status">
-            お住まいの自治体の助成制度は各自治体にご確認ください
+            居住地を選択すると、公費自己負担額の目安が表示されます
+          </p>
+        )}
+        {freeMode && (
+          <p className="search-results-notice" role="status">
+            公費対象外の施設（自費プラン・ホテルプラン）も含めて表示しています。料金や助成の可否は各施設・自治体へご確認ください
           </p>
         )}
 
@@ -329,11 +329,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
           <section className="facility-grid" aria-label="施設一覧">
             {sorted.map((facility) => {
               const isFavorite = favorites.has(facility.id);
-              const price = getPriceDisplay(facility, {
-                subsidyOn,
-                freeMode,
-                residenceOutside,
-              });
+              const price = getPriceDisplay(facility, { residence });
               return (
                 <article className="facility-card" key={facility.id}>
                   <div className={`facility-card__img search-photo--${facility.photoVariant}`}>
@@ -367,7 +363,7 @@ export default function FacilitySearch({ facilities }: { facilities: Facility[] 
                       {facility.features.map((feature) => (
                         <span className="tag" key={feature}>{feature}</span>
                       ))}
-                      {((effectiveFreeMode && !facility.isInFukuokaCity) || !facility.subsidyApplicable) && (
+                      {!facility.subsidyApplicable && (
                         <span className="tag tag--self-pay">公費対象外（自費）</span>
                       )}
                     </div>
