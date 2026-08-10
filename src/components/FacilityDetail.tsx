@@ -5,6 +5,11 @@ import Link from "next/link";
 import { fetchFacilities, getFacilityById, type Facility } from "@/data/facilities";
 import { getFacilityDetailPriceDisplay } from "@/data/fukuokaSubsidy";
 import FacilityGallery, { type GalleryImageSource } from "@/components/FacilityGallery";
+import FacilityHighlightCards from "@/components/FacilityHighlightCards";
+import {
+  PREVIEW_CANCELLATION_POLICY,
+  PREVIEW_PARKING,
+} from "@/data/previewSampleContent";
 import demo1 from "@/assets/facility-demo/demo-1.svg";
 import demo2 from "@/assets/facility-demo/demo-2.svg";
 import demo3 from "@/assets/facility-demo/demo-3.svg";
@@ -51,6 +56,20 @@ function ContactDetails({
 
 export default function FacilityDetail({ initialFacility }: { initialFacility: Facility }) {
   const [facility, setFacility] = useState<Facility>(initialFacility);
+  const [isPreview, setIsPreview] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const previewRequested = new URLSearchParams(window.location.search).get("preview") === "1";
+
+    queueMicrotask(() => {
+      if (!cancelled) setIsPreview(previewRequested);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -131,6 +150,26 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
         </div>
       ),
       hasValue: price.lines.length > 0,
+    },
+    {
+      label: "駐車場",
+      value: isPreview ? (
+        <>
+          <p>{PREVIEW_PARKING.value}</p>
+          <small>{PREVIEW_PARKING.note}</small>
+        </>
+      ) : null,
+      hasValue: isPreview,
+    },
+    {
+      label: "キャンセルポリシー",
+      value: isPreview ? (
+        <div className="facility-detail__multiline-info">
+          {PREVIEW_CANCELLATION_POLICY.lines.map((line) => <p key={line}>{line}</p>)}
+          <small>{PREVIEW_CANCELLATION_POLICY.note}</small>
+        </div>
+      ) : null,
+      hasValue: isPreview,
     },
   ];
 
@@ -255,6 +294,8 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
             </details>
           </section>
         )}
+
+        {isPreview && <FacilityHighlightCards />}
 
         <div className="facility-detail__footer-cta">
           <Link href="/search" className="btn btn--outline">

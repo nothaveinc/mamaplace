@@ -835,6 +835,93 @@
   overflow-wrap: anywhere;
   color: var(--color-text-medium);
 }
+.facility-detail__meta-value small,
+.facility-detail__multiline-info small {
+  display: block;
+  margin-top: var(--space-xs);
+  color: var(--color-text-light);
+  font-size: .75rem;
+}
+.facility-detail__multiline-info p { margin-bottom: var(--space-xs); }
+.facility-detail__highlights { margin-bottom: var(--space-xl); }
+.facility-detail__highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: var(--space-lg);
+}
+.facility-detail__highlight-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: var(--space-lg);
+  border: 1px solid var(--color-surface2);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+.facility-detail__highlight-card h3 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-dark);
+  font-size: 1rem;
+}
+.facility-detail__highlight-card h3 small {
+  color: var(--color-text-light);
+  font-size: .75rem;
+  font-weight: 400;
+}
+.facility-detail__belongings,
+.facility-detail__schedule,
+.facility-detail__voices { display: flex; flex-direction: column; gap: var(--space-sm); }
+.facility-detail__belongings li {
+  position: relative;
+  padding-left: var(--space-lg);
+  color: var(--color-text-medium);
+  font-size: .85rem;
+}
+.facility-detail__belongings li::before {
+  position: absolute;
+  left: 0;
+  color: var(--color-secondary);
+  font-weight: 700;
+  content: "✓";
+}
+.facility-detail__schedule li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: var(--space-sm);
+  color: var(--color-text-medium);
+  font-size: .85rem;
+}
+.facility-detail__schedule time { color: var(--color-primary-dark); font-weight: 700; }
+.facility-detail__voice {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--color-surface2);
+}
+.facility-detail__voice > span {
+  display: block;
+  margin-bottom: var(--space-xs);
+  color: var(--color-primary-dark);
+  font-size: .7rem;
+  font-weight: 700;
+}
+.facility-detail__voice strong { display: block; margin-bottom: var(--space-sm); font-size: .85rem; }
+.facility-detail__voice p { color: var(--color-text-medium); font-size: .8rem; line-height: 1.8; }
+.facility-detail__highlight-more {
+  margin-top: auto;
+  padding-top: var(--space-md);
+}
+.facility-detail__highlight-more summary {
+  color: var(--color-primary-dark);
+  font-size: .8rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+.facility-detail__highlight-more[open] summary { margin-bottom: var(--space-md); }
 .facility-detail__subsidy-details {
   overflow: hidden;
   border: 1px solid var(--color-surface2);
