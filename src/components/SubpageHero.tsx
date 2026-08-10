@@ -3,9 +3,10 @@ import Link from "next/link";
 type Props = {
   title: string;
   path: string;
+  parent?: { name: string; href: string };
 };
 
-export default function SubpageHero({ title, path }: Props) {
+export default function SubpageHero({ title, path, parent }: Props) {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -16,9 +17,15 @@ export default function SubpageHero({ title, path }: Props) {
         name: "ホーム",
         item: "https://mama-place.com/",
       },
-      {
+      ...(parent ? [{
         "@type": "ListItem",
         position: 2,
+        name: parent.name,
+        item: `https://mama-place.com${parent.href}`,
+      }] : []),
+      {
+        "@type": "ListItem",
+        position: parent ? 3 : 2,
         name: title,
         item: `https://mama-place.com${path}`,
       },
@@ -37,6 +44,11 @@ export default function SubpageHero({ title, path }: Props) {
             <li>
               <Link href="/">ホーム</Link>
             </li>
+            {parent && (
+              <li>
+                <Link href={parent.href}>{parent.name}</Link>
+              </li>
+            )}
             <li>{title}</li>
           </ol>
         </nav>

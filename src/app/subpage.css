@@ -607,71 +607,203 @@
 
 /* ── 施設詳細ページ ── */
 .facility-detail__top {
-  display: flex;
-  gap: 32px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 45fr) minmax(220px, 28fr) minmax(220px, 27fr);
+  gap: var(--space-lg);
   margin-bottom: 40px;
+  align-items: start;
 }
-.facility-detail__photo {
-  width: 220px;
+.facility-detail__top--no-contact { grid-template-columns: minmax(0, 45fr) minmax(220px, 55fr); }
+.facility-detail__gallery { min-width: 0; }
+.facility-detail__main-image {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
   aspect-ratio: 4 / 3;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, rgba(232, 165, 176, 0.25) 0%, rgba(123, 181, 176, 0.2) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
-  position: relative;
-  flex-shrink: 0;
+  background: var(--color-surface2);
+}
+.facility-detail__main-image > img,
+.facility-detail__thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .facility-detail__badge {
   position: absolute;
   top: 12px;
-  left: 12px;
+  right: 12px;
+  z-index: 2;
 }
-.facility-detail__body { flex: 1; min-width: 240px; }
+.facility-detail__gallery-arrow {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text-dark);
+  font-size: 28px;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+.facility-detail__gallery-arrow--previous { left: 12px; }
+.facility-detail__gallery-arrow--next { right: 12px; }
+.facility-detail__gallery-dots {
+  position: absolute;
+  z-index: 2;
+  bottom: 12px;
+  left: 50%;
+  display: flex;
+  gap: 6px;
+  padding: 6px 9px;
+  border-radius: var(--radius-full);
+  background: rgba(45,49,66,.35);
+  transform: translateX(-50%);
+}
+.facility-detail__gallery-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.6);
+}
+.facility-detail__gallery-dot.is-active { background: #fff; }
+.facility-detail__thumbnails {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+.facility-detail__thumbnail {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface2);
+  opacity: .72;
+}
+.facility-detail__thumbnail.is-active {
+  border-color: var(--color-primary-dark);
+  opacity: 1;
+}
+.facility-detail__thumbnail > span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(45,49,66,.58);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.facility-detail__body { min-width: 0; }
+.facility-detail__subsidy-label {
+  display: inline-flex;
+  margin-bottom: var(--space-sm);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: #eef3e9;
+  color: #5e8a4e;
+  font-size: .75rem;
+  font-weight: 700;
+}
 .facility-detail__type {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 4px 11px;
   border-radius: var(--radius-full);
-  background: var(--color-surface2);
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-primary-dark);
 }
+.facility-detail__care-type--宿泊型 { background: #fbe9ee; color: var(--color-primary-dark); }
+.facility-detail__care-type--通所型 { background: #eef3e9; color: #5e8a4e; }
+.facility-detail__care-type--訪問型 { background: #e9eef6; color: #4e6a9c; }
 .facility-detail__location {
   color: var(--color-text-medium);
   font-size: 0.9rem;
-  margin: 4px 0 10px;
+  margin: 0 0 var(--space-lg);
+  overflow-wrap: anywhere;
+}
+.facility-detail__info-group { margin-bottom: var(--space-lg); }
+.facility-detail__info-group:last-child { margin-bottom: 0; }
+.facility-detail__info-group h3 {
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-dark);
+  font-size: .85rem;
+}
+.facility-detail__info-group > p {
+  color: var(--color-text-medium);
+  font-size: .9rem;
 }
 .facility-detail__price {
-  margin: 16px 0;
+  margin: 0;
   font-size: 0.85rem;
-  color: var(--color-text-medium);
-}
-.facility-detail__price:not(.is-inquiry) {
   color: var(--color-primary-dark);
   font-weight: 700;
 }
-.review-placeholder {
-  margin: 0;
-  padding: 20px;
+.facility-detail__price p { margin-bottom: 4px; }
+.facility-detail__price small {
+  display: block;
+  margin-top: var(--space-sm);
+  color: var(--color-text-medium);
+  font-size: .7rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.facility-detail__contact-card {
+  padding: var(--space-lg);
+  border: 1px solid rgba(232,165,176,.45);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+.facility-detail__contact-card h2 {
+  margin-bottom: var(--space-xs);
+  font-size: 1.05rem;
+}
+.facility-detail__contact-card > p {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-medium);
+  font-size: .75rem;
+}
+.facility-detail__contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.facility-detail__contact-links a {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+  padding: 11px 13px;
+  border: 1px solid var(--color-surface2);
   border-radius: var(--radius-md);
   background: var(--color-surface2);
-  color: var(--color-text-medium);
+  color: var(--color-text-dark);
+  font-size: .85rem;
+  font-weight: 700;
+}
+.facility-detail__contact-links a:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 .facility-detail__price strong {
   font-family: var(--font-serif);
   font-size: 1.5rem;
   color: var(--color-primary-dark);
 }
-.facility-detail__actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 16px;
+.facility-detail__section {
+  margin-bottom: var(--space-xl);
+  padding: 0;
 }
-.facility-detail__section { margin-bottom: 40px; }
 .facility-detail__section h2 {
   font-size: 1.2rem;
   color: var(--color-text-dark);
@@ -694,10 +826,48 @@
   font-size: 0.9rem;
 }
 .facility-detail__meta-label {
-  flex: 0 0 96px;
+  flex: 0 0 180px;
   font-weight: 700;
   color: var(--color-text-dark);
 }
+.facility-detail__meta-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-text-medium);
+}
+.facility-detail__subsidy-details {
+  overflow: hidden;
+  border: 1px solid var(--color-surface2);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+.facility-detail__subsidy-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  color: var(--color-text-dark);
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+.facility-detail__subsidy-details summary::-webkit-details-marker { display: none; }
+.facility-detail__subsidy-icon {
+  flex-shrink: 0;
+  transition: transform .2s ease;
+}
+.facility-detail__subsidy-details[open] .facility-detail__subsidy-icon { transform: rotate(180deg); }
+.facility-detail__subsidy-content {
+  padding: 0 var(--space-lg) var(--space-lg);
+  color: var(--color-text-medium);
+  line-height: 1.8;
+}
+.facility-detail__subsidy-content p { margin-bottom: var(--space-sm); }
+.facility-detail__subsidy-content p:last-child { margin: var(--space-md) 0 0; }
+.facility-detail__subsidy-content ul { padding-left: 1.5em; }
+.facility-detail__subsidy-content ul ul { margin-top: var(--space-xs); }
+.facility-detail__subsidy-content a { color: var(--color-primary-dark); text-decoration: underline; }
 .facility-detail__footer-cta {
   display: flex;
   gap: 12px;
@@ -706,8 +876,18 @@
   padding-top: 32px;
   border-top: 1px solid var(--color-surface2);
 }
+@media (max-width: 900px) {
+  .facility-detail__top,
+  .facility-detail__top--no-contact { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 480px) {
-  .facility-detail__photo { width: 100%; aspect-ratio: 16 / 9; }
+  .facility-detail__main-image { aspect-ratio: 4 / 3; }
+  .facility-detail__gallery-arrow { width: 34px; height: 34px; }
+  .facility-detail__contact-card { padding: var(--space-md); }
+  .facility-detail__meta-row { flex-direction: column; gap: var(--space-xs); }
+  .facility-detail__meta-label { flex-basis: auto; }
+  .facility-detail__subsidy-details summary,
+  .facility-detail__subsidy-content { padding-left: var(--space-md); padding-right: var(--space-md); }
 }
 
 /* ── ホーム：施設マッチング ティーザー ── */

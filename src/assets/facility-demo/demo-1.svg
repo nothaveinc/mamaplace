@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="デモ画像：窓から光が差し込む部屋">
+  <defs>
+    <linearGradient id="d1wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FDF6F2"/>
+      <stop offset="1" stop-color="#F6E9E3"/>
+    </linearGradient>
+    <linearGradient id="d1sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBE3E7"/>
+      <stop offset="1" stop-color="#F7D9C6"/>
+    </linearGradient>
+    <linearGradient id="d1light" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#d1wall)"/>
+
+  <!-- 窓 -->
+  <rect x="196" y="96" width="408" height="300" rx="10" fill="#FFFFFF"/>
+  <rect x="212" y="112" width="376" height="268" rx="4" fill="url(#d1sky)"/>
+  <circle cx="470" cy="196" r="46" fill="#FFFFFF" opacity="0.65"/>
+  <path d="M212 312 q94 -46 188 -14 t188 -22 v104 H212 Z" fill="#E8A5B0" opacity="0.35"/>
+  <rect x="392" y="112" width="8" height="268" fill="#FFFFFF"/>
+  <rect x="212" y="242" width="376" height="8" fill="#FFFFFF"/>
+
+  <!-- 差し込む光 -->
+  <path d="M604 130 L800 300 L800 600 L360 600 Z" fill="url(#d1light)"/>
+
+  <!-- 床 -->
+  <rect y="452" width="800" height="148" fill="#EFE2D9"/>
+  <rect y="452" width="800" height="10" fill="#E3D2C6"/>
+
+  <!-- ソファ -->
+  <rect x="120" y="392" width="252" height="76" rx="26" fill="#F4C7A8"/>
+  <rect x="140" y="360" width="212" height="56" rx="22" fill="#F7D6BE"/>
+  <circle cx="196" cy="392" r="22" fill="#FFFFFF" opacity="0.75"/>
+  <circle cx="252" cy="392" r="22" fill="#E8A5B0" opacity="0.55"/>
+
+  <!-- 観葉植物 -->
+  <path d="M666 452 q-14 -66 22 -110 q30 44 14 110 Z" fill="#7BB5B0" opacity="0.75"/>
+  <path d="M666 452 q-46 -34 -44 -84 q46 22 60 84 Z" fill="#7BB5B0" opacity="0.55"/>
+  <path d="M648 452 h56 l-8 46 h-40 Z" fill="#D9BFA9"/>
+
+  <!-- ラベル -->
+  <g opacity="0.9">
+    <rect x="640" y="538" width="128" height="34" rx="17" fill="#2D3142" opacity="0.55"/>
+    <text x="704" y="561" font-family="'Noto Sans JP', sans-serif" font-size="17" fill="#FFFFFF" text-anchor="middle">デモ画像</text>
+  </g>
+</svg>

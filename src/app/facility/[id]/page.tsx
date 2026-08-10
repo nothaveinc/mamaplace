@@ -59,7 +59,11 @@ export default async function FacilityDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SubpageHero title={facility.name} path={`/facility/${facility.id}`} />
+      <SubpageHero
+        title={facility.name}
+        path={`/facility/${facility.id}`}
+        parent={{ name: "施設を探す", href: "/search" }}
+      />
       <FacilityDetail initialFacility={facility} />
     </>
   );

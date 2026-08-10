@@ -58,3 +58,36 @@ export function getPriceDisplay(
     isInquiry: false,
   };
 }
+
+export type FacilityDetailPriceDisplay = {
+  lines: string[];
+  note?: string;
+};
+
+export function getFacilityDetailPriceDisplay(
+  facility: Facility,
+): FacilityDetailPriceDisplay {
+  if (!facility.subsidyApplicable) {
+    return {
+      lines: [
+        facility.selfPayPriceLabel
+          ? `通常料金：${facility.selfPayPriceLabel}`
+          : "料金は施設へお問い合わせください",
+      ],
+    };
+  }
+
+  const lines = facility.careTypes.map((careType) => {
+    const rate = FUKUOKA_CITY_COPAY[careType];
+    return `${CARE_TYPE_PRICE_LABEL[careType]}：自己負担 ${rate.amount.toLocaleString("ja-JP")}円 / ${CARE_TYPE_UNIT_LABEL[careType]}`;
+  });
+
+  if (facility.selfPayPriceLabel) {
+    lines.push(`通常料金：${facility.selfPayPriceLabel}`);
+  }
+
+  return {
+    lines,
+    note: "※福岡市の公費助成が適用された場合の自己負担額です",
+  };
+}

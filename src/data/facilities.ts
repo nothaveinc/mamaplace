@@ -22,7 +22,12 @@ export type Facility = {
   contact: {
     phone?: string;
     note?: string;
+    email?: string;
+    website?: string;
+    instagram?: string;
+    line?: string;
   };
+  photos: string[];
   features: string[];
   subsidies: SubsidyEntry[];
   subsidyApplicable: boolean;
@@ -85,11 +90,16 @@ export const FACILITY_SHEET_URL =
 type RawFacilityRow = {
   ID: number;
   施設名: string;
+  画像: string;
   エリア: string;
   ケア種類: string;
   "価格（補助金料金・ホテル通常料金）": string;
   受け入れ可能な月齢: string;
   電話番号: string;
+  メール: string;
+  HP: string;
+  instagram: string;
+  line: string;
   "予約方法/備考": string;
   "対象自治体（公費）": string;
   "利用料金（補助金適応前）": string;
@@ -129,6 +139,13 @@ function parseContact(rawPhone: string, rawNote: string): { phone?: string; note
   return { note: fallbackNote || undefined };
 }
 
+function parsePhotos(rawPhotos: string): string[] {
+  return (rawPhotos ?? "")
+    .split(/[,\n]/)
+    .map((photo) => photo.trim())
+    .filter(Boolean);
+}
+
 function buildFeatures(subsidyApplicable: boolean, isHotelResort: boolean | undefined): string[] {
   const features: string[] = [];
   if (subsidyApplicable) features.push("公費助成対象");
@@ -143,7 +160,14 @@ function parseFacilityRow(row: RawFacilityRow): Facility {
   const isInFukuokaCity = FUKUOKA_CITY_WARDS.includes(ward);
   const careTypes = parseCareTypes(row.ケア種類 ?? "");
   const ageLimit = (row.受け入れ可能な月齢 ?? "").trim() || AGE_LIMIT_UNKNOWN;
-  const contact = parseContact(row.電話番号, row["予約方法/備考"]);
+  const contact = {
+    ...parseContact(row.電話番号, row["予約方法/備考"]),
+    email: (row.メール ?? "").trim() || undefined,
+    website: (row.HP ?? "").trim() || undefined,
+    instagram: (row.instagram ?? "").trim() || undefined,
+    line: (row.line ?? "").trim() || undefined,
+  };
+  const photos = parsePhotos(row.画像);
   const targetMunicipality = (row["対象自治体（公費）"] ?? "").trim();
   const subsidies: SubsidyEntry[] = targetMunicipality
     ? [{ municipality: targetMunicipality, applicable: true }]
@@ -164,6 +188,7 @@ function parseFacilityRow(row: RawFacilityRow): Facility {
     addressDetail,
     ageLimit,
     contact,
+    photos,
     features: buildFeatures(subsidyApplicable, meta.isHotelResort),
     subsidies,
     subsidyApplicable,
