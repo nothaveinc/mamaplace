@@ -263,7 +263,7 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
 
           <div className="filter-group search-filter-group">
             <label className="filter-label" htmlFor="search-area">
-              施設の場所
+              エリア
             </label>
             <select
               id="search-area"
