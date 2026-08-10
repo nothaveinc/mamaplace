@@ -93,6 +93,7 @@ type RawFacilityRow = {
   画像: string;
   エリア: string;
   ケア種類: string;
+  公費区分: string;
   "価格（補助金料金・ホテル通常料金）": string;
   受け入れ可能な月齢: string;
   電話番号: string;
@@ -100,7 +101,6 @@ type RawFacilityRow = {
   HP: string;
   instagram: string;
   line: string;
-  "予約方法/備考": string;
   "対象自治体（公費）": string;
   "利用料金（補助金適応前）": string;
 };
@@ -126,17 +126,15 @@ function resolveWard(rawArea: string): { ward: string; addressDetail: string } {
   return { ward, addressDetail: address };
 }
 
-function parseContact(rawPhone: string, rawNote: string): { phone?: string; note?: string } {
+function parseContact(rawPhone: string): { phone?: string; note?: string } {
   const cleaned = (rawPhone ?? "").replace(/^TEL[:：]?\s*/i, "").trim();
-  const note = (rawNote ?? "").trim();
   const isPhoneNumber = /^[0-9-]{9,}$/.test(cleaned);
 
   if (isPhoneNumber) {
-    return { phone: cleaned, note: note || undefined };
+    return { phone: cleaned };
   }
 
-  const fallbackNote = [cleaned, note].filter(Boolean).join(" / ");
-  return { note: fallbackNote || undefined };
+  return { note: cleaned || undefined };
 }
 
 function parsePhotos(rawPhotos: string): string[] {
@@ -161,18 +159,18 @@ function parseFacilityRow(row: RawFacilityRow): Facility {
   const careTypes = parseCareTypes(row.ケア種類 ?? "");
   const ageLimit = (row.受け入れ可能な月齢 ?? "").trim() || AGE_LIMIT_UNKNOWN;
   const contact = {
-    ...parseContact(row.電話番号, row["予約方法/備考"]),
+    ...parseContact(row.電話番号),
     email: (row.メール ?? "").trim() || undefined,
     website: (row.HP ?? "").trim() || undefined,
     instagram: (row.instagram ?? "").trim() || undefined,
     line: (row.line ?? "").trim() || undefined,
   };
   const photos = parsePhotos(row.画像);
+  const subsidyApplicable = (row.公費区分 ?? "").trim() === "補助対象";
   const targetMunicipality = (row["対象自治体（公費）"] ?? "").trim();
   const subsidies: SubsidyEntry[] = targetMunicipality
-    ? [{ municipality: targetMunicipality, applicable: true }]
+    ? [{ municipality: targetMunicipality, applicable: subsidyApplicable }]
     : [];
-  const subsidyApplicable = subsidies.some((subsidy) => subsidy.applicable);
   const selfPayPriceLabel =
     (row["価格（補助金料金・ホテル通常料金）"] ?? "").trim() || undefined;
   const meta = FACILITY_META[id] ?? DEFAULT_FACILITY_META;
