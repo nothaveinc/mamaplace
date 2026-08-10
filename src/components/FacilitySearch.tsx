@@ -23,9 +23,9 @@ const AVAILABILITY_LABEL: Record<Facility["availability"], string> = {
 };
 
 const CARE_TYPE_LABEL: Record<CareType, string> = {
-  宿泊型: "宿泊型（ショートステイ）",
-  通所型: "通所型（デイケア）",
-  訪問型: "訪問型（アウトリーチ）",
+  宿泊型: "宿泊",
+  通所型: "日帰り",
+  訪問型: "訪問",
 };
 
 const FEATURE_LABEL: Record<(typeof FEATURE_OPTIONS)[number], string> = {
@@ -405,7 +405,7 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
                     <div className="facility-card__types">
                       {facility.careTypes.map((careType) => (
                         <span className={`facility-card__type search-care-type--${careType}`} key={careType}>
-                          {careType}
+                          {CARE_TYPE_LABEL[careType]}
                         </span>
                       ))}
                     </div>
