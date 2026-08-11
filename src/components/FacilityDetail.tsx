@@ -270,21 +270,23 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
                 <span className="facility-detail__subsidy-icon" aria-hidden="true">▾</span>
               </summary>
               <div className="facility-detail__subsidy-content">
-                <p>福岡市の産後ケア事業の対象となる方</p>
+                <p className="facility-detail__subsidy-heading">
+                  福岡市の産後ケア事業の対象となる方
+                </p>
                 <p>次のすべてに該当する方</p>
-                <ul>
+                <ul className="facility-detail__subsidy-list">
                   <li>福岡市内に住民票がある方</li>
                   <li>
                     生後1年未満の赤ちゃんとそのお母さん または 流産・死産を経験して1年未満の女性（妊婦を除く）
-                    <ul>
-                      <li>注）事業者によって受け入れ可能な月齢が異なります。</li>
-                    </ul>
+                    <p className="facility-detail__subsidy-note">
+                      注）事業者によって受け入れ可能な月齢が異なります。
+                    </p>
                   </li>
                   <li>
                     赤ちゃん、お母さん共に医療行為の必要がない方
-                    <ul>
-                      <li>注）発熱や喉の痛みがある場合などのご利用はお控えください。</li>
-                    </ul>
+                    <p className="facility-detail__subsidy-note">
+                      注）発熱や喉の痛みがある場合などのご利用はお控えください。
+                    </p>
                   </li>
                 </ul>
                 <p>
@@ -299,10 +301,7 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
 
         <div className="facility-detail__footer-cta">
           <Link href="/search" className="btn btn--outline">
-            施設を探す一覧に戻る
-          </Link>
-          <Link href="/contact" className="btn btn--primary">
-            お問い合わせ
+            施設一覧に戻る
           </Link>
         </div>
       </div>

@@ -952,8 +952,35 @@
 }
 .facility-detail__subsidy-content p { margin-bottom: var(--space-sm); }
 .facility-detail__subsidy-content p:last-child { margin: var(--space-md) 0 0; }
-.facility-detail__subsidy-content ul { padding-left: 1.5em; }
-.facility-detail__subsidy-content ul ul { margin-top: var(--space-xs); }
+.facility-detail__subsidy-heading {
+  color: var(--color-text-dark);
+  font-weight: 700;
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-primary);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+.facility-detail__subsidy-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-left: 0;
+  list-style: none;
+}
+.facility-detail__subsidy-list > li {
+  position: relative;
+  padding-left: 1.5em;
+}
+.facility-detail__subsidy-list > li::before {
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+  content: "・";
+}
+.facility-detail__subsidy-note {
+  margin: var(--space-xs) 0 0;
+}
 .facility-detail__subsidy-content a { color: var(--color-primary-dark); text-decoration: underline; }
 .facility-detail__footer-cta {
   display: flex;
