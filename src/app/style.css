@@ -444,7 +444,6 @@ section {
   pointer-events: none;
 }
 
-/* 2カラム */
 .hero {
   display: grid;
   grid-template-columns: 1fr;
@@ -453,13 +452,6 @@ section {
   margin: 0 auto;
   padding-left: var(--space-lg);
   padding-right: var(--space-lg);
-}
-
-@media (min-width: 768px) {
-  .hero {
-    grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
-  }
 }
 
 /* テキスト側 */
@@ -508,138 +500,29 @@ section {
   margin-bottom: var(--space-xl);
 }
 
-/* 統計 */
-.hero__stats {
-  display: flex;
-  gap: var(--space-xl);
-  flex-wrap: wrap;
+.hero__area-info {
+  padding-left: var(--space-md);
+  max-width: 480px;
+  border-left: 3px solid var(--color-primary);
 }
 
-.hero__stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.hero__stat-num {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 600;
+.hero__area-title {
+  margin-bottom: 4px;
   color: var(--color-primary-dark);
-  line-height: 1;
-}
-
-.hero__stat-num small {
-  font-size: 1.1rem;
-}
-
-.hero__stat-label {
-  font-size: 0.78rem;
-  color: var(--color-text-light);
-  font-weight: 500;
-}
-
-/* ビジュアル側 */
-.hero__visual {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeInUp 0.8s 0.2s ease both;
-}
-
-.hero__illustration {
-  position: relative;
-  width: 320px;
-  height: 320px;
-}
-
-@media (min-width: 1024px) {
-  .hero__illustration {
-    width: 420px;
-    height: 420px;
-  }
-}
-
-/* 3つの円 */
-.hero__circle {
-  position: absolute;
-  border-radius: 50%;
-}
-
-.hero__circle--1 {
-  width: 70%;
-  height: 70%;
-  top: 0;
-  left: 15%;
-  background: radial-gradient(135deg, rgba(232, 165, 176, 0.5) 0%, rgba(232, 165, 176, 0.1) 100%);
-  animation: pulse 4s ease-in-out infinite;
-}
-
-.hero__circle--2 {
-  width: 55%;
-  height: 55%;
-  bottom: 5%;
-  left: 0;
-  background: radial-gradient(135deg, rgba(123, 181, 176, 0.45) 0%, rgba(123, 181, 176, 0.1) 100%);
-  animation: pulse 4s 1s ease-in-out infinite;
-}
-
-.hero__circle--3 {
-  width: 45%;
-  height: 45%;
-  bottom: 10%;
-  right: 0;
-  background: radial-gradient(135deg, rgba(244, 199, 168, 0.5) 0%, rgba(244, 199, 168, 0.1) 100%);
-  animation: pulse 4s 2s ease-in-out infinite;
-}
-
-/* フロートカード */
-.hero__card {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md) var(--space-lg);
-  box-shadow: var(--shadow-xl);
-  min-width: 200px;
-  text-align: center;
-  animation: floatCard 3s ease-in-out infinite;
-  z-index: 2;
-}
-
-.hero__card-icon {
-  font-size: 1.8rem;
-  margin-bottom: var(--space-xs);
-}
-
-.hero__card-text {
-  font-size: 0.75rem;
-  color: var(--color-text-light);
-  margin-bottom: var(--space-sm);
-  font-weight: 500;
-}
-
-.hero__card-meter {
-  height: 8px;
-  background: var(--color-surface2);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  margin-bottom: var(--space-sm);
-}
-
-.hero__card-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  border-radius: var(--radius-full);
-  transition: width 1s ease;
-}
-
-.hero__card-result {
-  font-size: 0.8rem;
   font-weight: 700;
+}
+
+.hero__area-text {
+  color: var(--color-text-medium);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.hero__area-expansion {
+  margin-top: 4px;
   color: var(--color-primary-dark);
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 /* Hero下 施設検索 */
@@ -2249,22 +2132,6 @@ section {
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.06);
-    opacity: 0.85;
-  }
-}
-
-@keyframes floatCard {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%       { transform: translateX(-50%) translateY(-10px); }
-}
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -2308,14 +2175,6 @@ section {
     min-height: auto;
     padding-top: calc(var(--nav-height) + var(--space-xl));
     grid-template-columns: 1fr;
-  }
-
-  .hero__visual {
-    display: none; /* モバイルでは非表示 */
-  }
-
-  .hero__stats {
-    gap: var(--space-lg);
   }
 
   .features__grid {

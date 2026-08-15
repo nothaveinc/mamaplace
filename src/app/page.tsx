@@ -74,38 +74,12 @@ export default function Home() {
               助成額を調べる
             </Link>
           </div>
-          <div className="hero__stats">
-            <div className="hero__stat">
-              <span className="hero__stat-num">47</span>
-              <span className="hero__stat-label">都道府県対応</span>
-            </div>
-            <div className="hero__stat">
-              <span className="hero__stat-num">
-                500<small>+</small>
-              </span>
-              <span className="hero__stat-label">掲載施設</span>
-            </div>
-            <div className="hero__stat">
-              <span className="hero__stat-num">
-                98<small>%</small>
-              </span>
-              <span className="hero__stat-label">ユーザー満足度</span>
-            </div>
-          </div>
-        </div>
-        <div className="hero__visual">
-          <div className="hero__illustration">
-            <div className="hero__circle hero__circle--1"></div>
-            <div className="hero__circle hero__circle--2"></div>
-            <div className="hero__circle hero__circle--3"></div>
-            <div className="hero__card">
-              <div className="hero__card-icon">🌸</div>
-              <p className="hero__card-text">公費助成の活用度</p>
-              <div className="hero__card-meter">
-                <div className="hero__card-fill" style={{ width: "65%" }} />
-              </div>
-              <p className="hero__card-result">自己負担を大きく軽減できます</p>
-            </div>
+          <div className="hero__area-info">
+            <p className="hero__area-title">福岡市にお住まいの方へ</p>
+            <p className="hero__area-text">
+              福岡市の助成対象施設と、福岡県内の産後ケアホテルを探せる検索サイトです。
+            </p>
+            <p className="hero__area-expansion">順次対象エリア拡大予定！！</p>
           </div>
         </div>
       </section>
