@@ -1,6 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import HomeFacilitySearch from "@/components/HomeFacilitySearch";
-import QualityMetrics from "@/components/QualityMetrics";
 import SubsidySimulator from "@/components/SubsidySimulator";
 
 const jsonLd = {
@@ -56,97 +56,78 @@ export default function Home() {
 
       {/* Hero */}
       <section className="hero">
-        <div className="hero__content">
-          <p className="hero__tag">助産師監修</p>
-          <h1 className="hero__title">
-            産後のあなたへ、
-            <br />
-            最適なケアを。
-          </h1>
-          <p className="hero__subtitle">
-            住所・世帯状況・赤ちゃんの月齢を入力するだけで、あなたにぴったりの産後ケアと公費助成を即座にご提案します。
-          </p>
+        <Image
+          className="hero__image"
+          src="/mamaplace/assets/images/hero-mother-baby.png"
+          alt="赤ちゃんを抱くお母さん"
+          fill
+          preload
+          sizes="(max-width: 767px) 100vw, 1200px"
+        />
+        <div className="hero__overlay" aria-hidden="true" />
+        <div className="hero__inner">
+          <div className="hero__main">
+            <p className="hero__tag">助産師監修</p>
+            <h1 className="hero__title">
+              <span className="hero__title-lead"># 産後のあなたへ、</span>
+              <span className="hero__title-accent">
+                最適なケア<span>を。</span>
+              </span>
+            </h1>
+            <p className="hero__subtitle">
+              お住まいの地域や希望するケアに合わせて、
+              <br className="hero__desktop-break" />
+              利用できる助成制度と産後ケア施設をわかりやすくご案内します。
+            </p>
+          </div>
+
           <div className="hero__actions">
-            <Link href="/search" className="btn btn--primary">
+            <Link href="/search" className="hero__button hero__button--primary">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="6.5" />
+                <path d="m16 16 4.5 4.5" />
+              </svg>
               施設を探す
             </Link>
-            <Link href="/#subsidy" className="btn btn--outline">
-              助成額を調べる
-            </Link>
           </div>
-          <div className="hero__area-info">
-            <p className="hero__area-title">福岡市にお住まいの方へ</p>
-            <p className="hero__area-text">
-              福岡市の助成対象施設と、福岡県内の産後ケアホテルを探せる検索サイトです。
-            </p>
-            <p className="hero__area-expansion">順次対象エリア拡大予定！！</p>
+
+          <div className="hero__notices">
+            <div className="hero__notice">
+              <svg className="hero__notice-icon" aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                <circle cx="12" cy="10" r="2.5" />
+              </svg>
+              <div>
+                <p className="hero__notice-title">福岡市にお住まいの方へ</p>
+                <p className="hero__notice-text">
+                  福岡市の助成対象施設と、福岡県内の産後ケアホテルを探せる検索サイトです。
+                </p>
+              </div>
+            </div>
+            <div className="hero__notice hero__notice--expansion">
+              <svg className="hero__notice-icon" aria-hidden="true" viewBox="0 0 24 24">
+                <rect x="4" y="5" width="16" height="15" rx="2" />
+                <path d="M8 3v4M16 3v4M4 9h16" />
+                <path d="M12 12v5M9.5 14.5h5" />
+              </svg>
+              <p className="hero__notice-title">順次対象エリア拡大予定！！</p>
+            </div>
           </div>
         </div>
       </section>
 
       <HomeFacilitySearch />
 
-      {/* Features */}
-      <section className="features">
-        <div className="container">
-          <div className="features__grid">
-            <div className="feature-card">
-              <div className="feature-card__icon">💰</div>
-              <h3 className="feature-card__title">公費助成シミュレーター</h3>
-              <p className="feature-card__desc">
-                居住地に基づき、自己負担額と申請ステップ（窓口・オンライン等）を自動で提示します。
-              </p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-card__icon">🏥</div>
-              <h3 className="feature-card__title">施設マッチング</h3>
-              <p className="feature-card__desc">
-                条件に合う施設の空き状況やリアルな口コミを掲載。あなたにぴったりの施設を見つけます。
-              </p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-card__icon">⭐</div>
-              <h3 className="feature-card__title">専門性の可視化</h3>
-              <p className="feature-card__desc">
-                各施設のケアの質やスタッフの専門性を独自の指標でわかりやすく図解します。
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Subsidy Section */}
       <section className="subsidy" id="subsidy">
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">STEP 1</span>
             <h2 className="section-title">公費助成シミュレーター</h2>
             <p className="section-desc">
-              お住まいの地域の産後ケア助成制度を確認し、自己負担額をシミュレーションできます。
+              福岡市の産後ケア事業を利用した場合の自己負担額をシミュレーションできます。
             </p>
           </div>
           <SubsidySimulator />
-        </div>
-      </section>
-
-      {/* Facility Section */}
-      <section className="facility">
-        <div className="container">
-          <div className="section-header">
-            <span className="section-tag">STEP 2</span>
-            <h2 className="section-title">施設マッチング</h2>
-            <p className="section-desc">
-              あなたの条件に合った産後ケア施設を探しましょう。
-            </p>
-          </div>
-          <div className="facility-teaser">
-            <p className="facility-teaser__text">
-              宿泊型・通所型・訪問型から、エリアやこだわり条件で絞り込んで施設を比較できます。空き状況や口コミ、料金もまとめてチェックできます。
-            </p>
-            <Link href="/search" className="btn btn--primary">
-              施設を探す →
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -157,24 +138,21 @@ export default function Home() {
             <div className="about__content">
               <span className="section-tag">このサービスについて</span>
               <h2 className="section-title">
-                医療×美容の視点で、
+                助成対象施設も、
                 <br />
-                産後ケアの質を届ける
+                ホテルタイプもまとめて探せる
               </h2>
               <p className="about__text">
-                MamaPlaceは、美容皮膚科でのマネジメント経験を持つ専門家チームが運営しています。医療の専門性と、患者さんへの細やかな配慮を両立した視点で、各施設のケアの質を独自に評価しています。
+                MamaPlaceは、福岡市の公費助成を利用できる産後ケア施設と、助成対象外のホテルタイプの施設を、ひとつのサイトでまとめて探せるサービスです。
               </p>
               <p className="about__text">
-                産後のお母さんが、本当に必要なケアに出会えるよう、情報の透明性と使いやすさを追求し続けています。
+                助成の対象かどうかに加えて、エリアやケアの種類などの条件を見比べながら、ご自身の希望に合う施設をわかりやすく探せます。
               </p>
               <div className="about__badges">
                 <span className="badge">助産師監修</span>
                 <span className="badge">医療法準拠</span>
                 <span className="badge">個人情報保護</span>
               </div>
-            </div>
-            <div className="about__visual">
-              <QualityMetrics />
             </div>
           </div>
         </div>

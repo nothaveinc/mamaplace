@@ -13,8 +13,18 @@ import { getPriceDisplay } from "@/data/fukuokaSubsidy";
 import type { CareType } from "@/data/subsidy";
 
 type SortMode = "recommend" | "name";
-type Residence = "" | "福岡市" | "福岡市外";
-type FacilityFilter = "all" | "subsidy" | "non-subsidy";
+export type Residence = "" | "福岡市" | "福岡市外";
+export type FacilityFilter = "all" | "subsidy" | "non-subsidy";
+
+export type SearchInitialFilters = {
+  residence: Residence;
+  facilityFilter: FacilityFilter;
+  areas: string[];
+  types: CareType[];
+  showFavorites: boolean;
+  page: number;
+  hasSearchConditions: boolean;
+};
 
 const FAVORITES_STORAGE_KEY = "mamaplace:favorite-facility-ids";
 const FACILITIES_PER_PAGE = 12;
@@ -62,18 +72,24 @@ function FacilityContact({ facility }: { facility: Facility }) {
   );
 }
 
-export default function FacilitySearch({ initialFacilities }: { initialFacilities: Facility[] }) {
+export default function FacilitySearch({
+  initialFacilities,
+  initialFilters,
+}: {
+  initialFacilities: Facility[];
+  initialFilters: SearchInitialFilters;
+}) {
   const [facilities, setFacilities] = useState<Facility[]>(initialFacilities);
-  const [residence, setResidence] = useState<Residence>("");
-  const [facilityFilter, setFacilityFilter] = useState<FacilityFilter>("all");
+  const [residence, setResidence] = useState<Residence>(initialFilters.residence);
+  const [facilityFilter, setFacilityFilter] = useState<FacilityFilter>(initialFilters.facilityFilter);
   const [subsidyFilterError, setSubsidyFilterError] = useState(false);
-  const [areas, setAreas] = useState<string[]>([]);
-  const [types, setTypes] = useState<CareType[]>([]);
+  const [areas, setAreas] = useState<string[]>(initialFilters.areas);
+  const [types, setTypes] = useState<CareType[]>(initialFilters.types);
   const [sort, setSort] = useState<SortMode>("recommend");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
-  const [showFavorites, setShowFavorites] = useState(false);
-  const [page, setPage] = useState(1);
+  const [showFavorites] = useState(initialFilters.showFavorites);
+  const [page, setPage] = useState(initialFilters.page);
 
   const handleFacilityFilterChange = (value: FacilityFilter) => {
     if (value === "subsidy" && residence === "") {
@@ -114,42 +130,11 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
       if (Array.isArray(favoriteIds)) {
         setFavorites(new Set(favoriteIds.filter((id): id is string => typeof id === "string")));
       }
-      const params = new URLSearchParams(window.location.search);
-      const requestedResidence = params.get("residence");
-      const initialResidence: Residence =
-        requestedResidence === "福岡市" || requestedResidence === "福岡市外"
-          ? requestedResidence
-          : "";
-      const allowedAreas = new Set<string>([...AREAS, HOTEL_RESORT_AREA]);
-      const initialAreas = params.getAll("area").filter((area) => allowedAreas.has(area));
-      const initialTypes = params
-        .getAll("type")
-        .filter((type): type is CareType => CARE_TYPE_OPTIONS.includes(type as CareType));
-      const isFavoritesFilter = params.get("favorites") === "1";
-      const hasInitialSearchConditions =
-        initialResidence !== "" ||
-        initialAreas.length > 0 ||
-        initialTypes.length > 0 ||
-        isFavoritesFilter;
-
-      setResidence(initialResidence);
-      setAreas(initialAreas);
-      setTypes(initialTypes);
-      setShowFavorites(isFavoritesFilter);
-      if (!hasInitialSearchConditions && window.matchMedia("(max-width: 640px)").matches) {
+      if (!initialFilters.hasSearchConditions && window.matchMedia("(max-width: 640px)").matches) {
         setIsDrawerOpen(true);
       }
-      const requestedPage = Number(params.get("page"));
-      if (Number.isInteger(requestedPage) && requestedPage > 1) setPage(requestedPage);
     });
-  }, []);
-
-  useEffect(() => {
-    if (residence === "") {
-      setSubsidyFilterError(false);
-      setFacilityFilter((current) => (current === "subsidy" ? "all" : current));
-    }
-  }, [residence]);
+  }, [initialFilters.hasSearchConditions]);
 
   useEffect(() => {
     if (!isDrawerOpen) return;
@@ -285,7 +270,12 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
               value={residence}
               onChange={(event) => {
                 setPage(1);
-                setResidence(event.target.value as Residence);
+                const nextResidence = event.target.value as Residence;
+                setResidence(nextResidence);
+                if (nextResidence === "") {
+                  setSubsidyFilterError(false);
+                  setFacilityFilter((current) => (current === "subsidy" ? "all" : current));
+                }
               }}
             >
               <option value="">選択してください</option>

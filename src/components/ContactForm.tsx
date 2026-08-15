@@ -10,16 +10,25 @@ type Errors = {
   agree?: string;
 };
 
+type SubmitStatus = "idle" | "sending" | "success" | "error";
+
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [type, setType] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
   const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
+  const [submitMessage, setSubmitMessage] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitStatus === "sending") return;
+
+    setSubmitStatus("idle");
+    setSubmitMessage("");
 
     const next: Errors = {};
     if (!name.trim()) {
@@ -39,16 +48,68 @@ export default function ContactForm() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    alert("お問い合わせを受け付けました。3営業日以内にご返信いたします。");
-    setName("");
-    setEmail("");
-    setType("");
-    setMessage("");
-    setAgree(false);
+    setSubmitStatus("sending");
+    setSubmitMessage("");
+
+    try {
+      const basePath = window.location.pathname.replace(/\/contact\/?$/, "");
+      const response = await fetch(`${basePath}/contact-send.php`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          type,
+          message: message.trim(),
+          website,
+          agree,
+        }),
+      });
+      const data = (await response.json()) as {
+        ok?: boolean;
+        message?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message || "送信に失敗しました。");
+      }
+
+      setName("");
+      setEmail("");
+      setType("");
+      setMessage("");
+      setWebsite("");
+      setAgree(false);
+      setSubmitStatus("success");
+      setSubmitMessage(
+        "お問い合わせを受け付けました。3営業日以内にご返信いたします。",
+      );
+    } catch {
+      setSubmitStatus("error");
+      setSubmitMessage(
+        "送信できませんでした。時間をおいて、もう一度お試しください。",
+      );
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} noValidate>
+      <div className="contact-honeypot" aria-hidden="true">
+        <label htmlFor="contactWebsite">ウェブサイト</label>
+        <input
+          type="text"
+          id="contactWebsite"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       <div className="form-group">
         <label className="form-label" htmlFor="contactName">
           お名前 <span className="required">*必須</span>
@@ -59,6 +120,7 @@ export default function ContactForm() {
           className={`form-input${errors.name ? " form-input--error" : ""}`}
           placeholder="例: 山田 花子"
           autoComplete="name"
+          maxLength={100}
           value={name}
           onChange={(e) => {
             setName(e.target.value);
@@ -80,6 +142,7 @@ export default function ContactForm() {
           className={`form-input${errors.email ? " form-input--error" : ""}`}
           placeholder="例: hanako@example.com"
           autoComplete="email"
+          maxLength={254}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
@@ -118,6 +181,7 @@ export default function ContactForm() {
           id="contactMessage"
           className={`form-textarea${errors.message ? " form-textarea--error" : ""}`}
           placeholder="お問い合わせ内容をご記入ください。"
+          maxLength={5000}
           value={message}
           onChange={(e) => {
             setMessage(e.target.value);
@@ -157,9 +221,21 @@ export default function ContactForm() {
       </div>
 
       <div className="form-group form-group--submit" style={{ marginBottom: 0 }}>
-        <button type="submit" className="btn btn--primary btn--full">
-          送信する
+        <button
+          type="submit"
+          className="btn btn--primary btn--full"
+          disabled={submitStatus === "sending"}
+        >
+          {submitStatus === "sending" ? "送信中…" : "送信する"}
         </button>
+        {submitStatus !== "idle" && submitStatus !== "sending" && (
+          <p
+            className={`contact-submit-status contact-submit-status--${submitStatus}`}
+            role={submitStatus === "error" ? "alert" : "status"}
+          >
+            {submitMessage}
+          </p>
+        )}
       </div>
     </form>
   );

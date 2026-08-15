@@ -226,6 +226,35 @@
 .form-error-text.is-visible { display: block; }
 .form-input--error { border-color: #e53935 !important; box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.12) !important; }
 .form-textarea--error { border-color: #e53935 !important; box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.12) !important; }
+.contact-honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}
+.contact-form-wrap .btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
+  transform: none;
+}
+.contact-submit-status {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+.contact-submit-status--success {
+  border: 1px solid rgba(75, 148, 140, 0.25);
+  background: rgba(75, 148, 140, 0.08);
+  color: #39766f;
+}
+.contact-submit-status--error {
+  border: 1px solid rgba(192, 55, 74, 0.2);
+  background: rgba(192, 55, 74, 0.06);
+  color: #c0374a;
+}
 
 /* ── 施設を探す ── */
 .search-page {
@@ -1042,16 +1071,4 @@
   .facility-detail__meta-label { flex-basis: auto; }
   .facility-detail__subsidy-details summary,
   .facility-detail__subsidy-content { padding-left: var(--space-md); padding-right: var(--space-md); }
-}
-
-/* ── ホーム：施設マッチング ティーザー ── */
-.facility-teaser {
-  text-align: center;
-  max-width: 640px;
-  margin: 0 auto;
-}
-.facility-teaser__text {
-  color: var(--color-text-medium);
-  line-height: 1.9;
-  margin-bottom: 24px;
 }
