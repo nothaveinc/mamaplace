@@ -62,6 +62,7 @@ export default function Home() {
           alt="赤ちゃんを抱くお母さん"
           fill
           preload
+          unoptimized
           sizes="(max-width: 767px) 100vw, 1200px"
         />
         <div className="hero__overlay" aria-hidden="true" />
