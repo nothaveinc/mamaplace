@@ -54,9 +54,39 @@ function ContactDetails({
   );
 }
 
+function ContactCard({
+  contactLinks,
+  className,
+}: {
+  contactLinks: ContactLink[];
+  className: string;
+}) {
+  return (
+    <aside className={`facility-detail__contact-card ${className}`}>
+      <h2>予約・お問い合わせ</h2>
+      <p>ご希望の方法でご連絡ください。</p>
+      <div className="facility-detail__contact-links">
+        {contactLinks.map((link) => (
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noreferrer" : undefined}
+            key={link.label}
+          >
+            <span aria-hidden="true">{link.icon}</span>
+            <span>{link.label}</span>
+            <span aria-hidden="true">›</span>
+          </a>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
 export default function FacilityDetail({ initialFacility }: { initialFacility: Facility }) {
   const [facility, setFacility] = useState<Facility>(initialFacility);
   const [isPreview, setIsPreview] = useState(false);
+  const [returnSearchQuery, setReturnSearchQuery] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -69,6 +99,18 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const returnParams = new URLSearchParams();
+    const page = Number(params.get("page"));
+    if (Number.isInteger(page) && page > 1) returnParams.set("page", String(page));
+    if (params.get("favorites") === "1") returnParams.set("favorites", "1");
+
+    queueMicrotask(() => {
+      setReturnSearchQuery(returnParams.toString());
+    });
   }, []);
 
   useEffect(() => {
@@ -184,7 +226,6 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
           <FacilityGallery
             images={galleryImages}
             facilityName={facility.name}
-            availability={facility.availability}
             key={galleryImages
               .map((image) => (typeof image === "string" ? image : image.src))
               .join("|")}
@@ -194,9 +235,6 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
             {facility.subsidyApplicable && (
               <span className="facility-detail__subsidy-label">公費助成対象</span>
             )}
-            <p className="facility-detail__location">
-              📍 福岡県{facility.addressDetail}
-            </p>
             <div className="facility-detail__info-group">
               <h3>対応ケア</h3>
               <div className="facility-detail__types">
@@ -224,24 +262,7 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
           </div>
 
           {contactLinks.length > 0 && (
-            <aside className="facility-detail__contact-card">
-              <h2>予約・お問い合わせ</h2>
-              <p>ご希望の方法でご連絡ください。</p>
-              <div className="facility-detail__contact-links">
-                {contactLinks.map((link) => (
-                  <a
-                    href={link.href}
-                    target={link.external ? "_blank" : undefined}
-                    rel={link.external ? "noreferrer" : undefined}
-                    key={link.label}
-                  >
-                    <span aria-hidden="true">{link.icon}</span>
-                    <span>{link.label}</span>
-                    <span aria-hidden="true">›</span>
-                  </a>
-                ))}
-              </div>
-            </aside>
+            <ContactCard contactLinks={contactLinks} className="facility-detail__contact-card--desktop" />
           )}
         </div>
 
@@ -299,8 +320,12 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
 
         {isPreview && <FacilityHighlightCards />}
 
+        {contactLinks.length > 0 && (
+          <ContactCard contactLinks={contactLinks} className="facility-detail__contact-card--mobile" />
+        )}
+
         <div className="facility-detail__footer-cta">
-          <Link href="/search" className="btn btn--outline">
+          <Link href={`/search${returnSearchQuery ? `?${returnSearchQuery}` : ""}#facility-${facility.id}`} className="btn btn--outline">
             施設一覧に戻る
           </Link>
         </div>

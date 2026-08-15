@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   AREAS,
   CARE_TYPE_OPTIONS,
-  FEATURE_OPTIONS,
   HOTEL_RESORT_AREA,
   fetchFacilities,
   type Facility,
@@ -17,20 +16,13 @@ type SortMode = "recommend" | "name";
 type Residence = "" | "福岡市" | "福岡市外";
 type FacilityFilter = "all" | "subsidy" | "non-subsidy";
 
-const AVAILABILITY_LABEL: Record<Facility["availability"], string> = {
-  ok: "空きあり",
-  few: "残りわずか",
-};
+const FAVORITES_STORAGE_KEY = "mamaplace:favorite-facility-ids";
+const FACILITIES_PER_PAGE = 12;
 
 const CARE_TYPE_LABEL: Record<CareType, string> = {
   宿泊型: "宿泊",
   通所型: "日帰り",
   訪問型: "訪問",
-};
-
-const FEATURE_LABEL: Record<(typeof FEATURE_OPTIONS)[number], string> = {
-  公費助成対象: "公費助成対象",
-  自費プランあり: "自費プランあり",
 };
 
 function toggleValue<T extends string>(list: T[], value: T): T[] {
@@ -75,12 +67,13 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
   const [residence, setResidence] = useState<Residence>("");
   const [facilityFilter, setFacilityFilter] = useState<FacilityFilter>("all");
   const [subsidyFilterError, setSubsidyFilterError] = useState(false);
-  const [area, setArea] = useState("");
+  const [areas, setAreas] = useState<string[]>([]);
   const [types, setTypes] = useState<CareType[]>([]);
-  const [features, setFeatures] = useState<(typeof FEATURE_OPTIONS)[number][]>([]);
   const [sort, setSort] = useState<SortMode>("recommend");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [page, setPage] = useState(1);
 
   const handleFacilityFilterChange = (value: FacilityFilter) => {
     if (value === "subsidy" && residence === "") {
@@ -88,6 +81,7 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
       return;
     }
     setSubsidyFilterError(false);
+    setPage(1);
     setFacilityFilter(value);
   };
 
@@ -105,6 +99,49 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    let favoriteIds: unknown = [];
+    try {
+      const storedFavorites = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
+      favoriteIds = storedFavorites ? JSON.parse(storedFavorites) : [];
+    } catch {
+      // 保存済みデータが壊れている場合は空のお気に入りとして扱う
+    }
+
+    queueMicrotask(() => {
+      if (Array.isArray(favoriteIds)) {
+        setFavorites(new Set(favoriteIds.filter((id): id is string => typeof id === "string")));
+      }
+      const params = new URLSearchParams(window.location.search);
+      const requestedResidence = params.get("residence");
+      const initialResidence: Residence =
+        requestedResidence === "福岡市" || requestedResidence === "福岡市外"
+          ? requestedResidence
+          : "";
+      const allowedAreas = new Set<string>([...AREAS, HOTEL_RESORT_AREA]);
+      const initialAreas = params.getAll("area").filter((area) => allowedAreas.has(area));
+      const initialTypes = params
+        .getAll("type")
+        .filter((type): type is CareType => CARE_TYPE_OPTIONS.includes(type as CareType));
+      const isFavoritesFilter = params.get("favorites") === "1";
+      const hasInitialSearchConditions =
+        initialResidence !== "" ||
+        initialAreas.length > 0 ||
+        initialTypes.length > 0 ||
+        isFavoritesFilter;
+
+      setResidence(initialResidence);
+      setAreas(initialAreas);
+      setTypes(initialTypes);
+      setShowFavorites(isFavoritesFilter);
+      if (!hasInitialSearchConditions && window.matchMedia("(max-width: 640px)").matches) {
+        setIsDrawerOpen(true);
+      }
+      const requestedPage = Number(params.get("page"));
+      if (Number.isInteger(requestedPage) && requestedPage > 1) setPage(requestedPage);
+    });
   }, []);
 
   useEffect(() => {
@@ -126,15 +163,18 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
 
   const sorted = useMemo(() => {
     const list = facilities.filter((facility) => {
+      if (showFavorites && !favorites.has(facility.id)) return false;
       if (residence === "福岡市" && !facility.subsidyApplicable) return false;
       if (residence === "福岡市外" && facility.subsidyApplicable) return false;
       if (facilityFilter === "subsidy" && !facility.subsidyApplicable) return false;
       if (facilityFilter === "non-subsidy" && facility.subsidyApplicable) return false;
       if (
-        area &&
-        (area === HOTEL_RESORT_AREA
-          ? !facility.isHotelResort
-          : facility.ward !== area)
+        areas.length > 0 &&
+        !areas.some((area) =>
+          area === HOTEL_RESORT_AREA
+            ? facility.isHotelResort
+            : facility.ward === area,
+        )
       ) {
         return false;
       }
@@ -144,28 +184,59 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
       ) {
         return false;
       }
-      return features.every((feature) => facility.features.includes(feature));
+      return true;
     });
 
     if (sort === "name") {
       list.sort((a, b) => a.name.localeCompare(b.name, "ja"));
     }
     return list;
-  }, [facilities, residence, facilityFilter, area, types, features, sort]);
+  }, [facilities, favorites, showFavorites, residence, facilityFilter, areas, types, sort]);
 
-  const clearFilters = () => {
-    setArea("");
-    setTypes([]);
-    setFeatures([]);
+  const totalPages = Math.max(1, Math.ceil(sorted.length / FACILITIES_PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const pagedFacilities = sorted.slice(
+    (currentPage - 1) * FACILITIES_PER_PAGE,
+    currentPage * FACILITIES_PER_PAGE,
+  );
+
+  useEffect(() => {
+    const targetId = window.location.hash.slice(1);
+    if (!targetId) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(targetId)?.scrollIntoView({ block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [currentPage]);
+
+  const changePage = (nextPage: number) => {
+    setPage(nextPage);
+    const params = new URLSearchParams(window.location.search);
+    if (nextPage === 1) params.delete("page");
+    else params.set("page", String(nextPage));
+    const query = params.toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`,
+    );
+    document.querySelector(".search-results-header")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const removeChip = (kind: "area" | "type" | "feature", value: string) => {
-    if (kind === "area") setArea("");
+  const clearFilters = () => {
+    setPage(1);
+    setAreas([]);
+    setTypes([]);
+  };
+
+  const removeChip = (kind: "area" | "type", value: string) => {
+    setPage(1);
+    if (kind === "area") {
+      setAreas((current) => current.filter((item) => item !== value));
+    }
     if (kind === "type") {
       setTypes((current) => current.filter((item) => item !== value));
-    }
-    if (kind === "feature") {
-      setFeatures((current) => current.filter((item) => item !== value));
     }
   };
 
@@ -174,14 +245,14 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
       const next = new Set(current);
       if (next.has(id)) next.delete(id);
       else next.add(id);
+      window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...next]));
       return next;
     });
   };
 
   const activeChips = [
-    ...(area ? [{ kind: "area" as const, value: area }] : []),
+    ...areas.map((value) => ({ kind: "area" as const, value })),
     ...types.map((value) => ({ kind: "type" as const, value })),
-    ...features.map((value) => ({ kind: "feature" as const, value })),
   ];
 
   return (
@@ -212,7 +283,10 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
               id="search-residence"
               className="filter-select"
               value={residence}
-              onChange={(event) => setResidence(event.target.value as Residence)}
+              onChange={(event) => {
+                setPage(1);
+                setResidence(event.target.value as Residence);
+              }}
             >
               <option value="">選択してください</option>
               <option value="福岡市">福岡市</option>
@@ -261,25 +335,27 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
             </label>
           </fieldset>
 
-          <div className="filter-group search-filter-group">
-            <label className="filter-label" htmlFor="search-area">
-              エリア
-            </label>
-            <select
-              id="search-area"
-              className="filter-select"
-              value={area}
-              onChange={(event) => setArea(event.target.value)}
-            >
-              <option value="">すべてのエリア</option>
-              {AREAS.map((item) => (
-                <option key={item} value={item}>
-                  福岡県 {item}
-                </option>
+          <fieldset className="search-filter-group">
+            <legend className="filter-label">施設の場所</legend>
+            <div className="search-check-list search-area-list">
+              {[...AREAS, HOTEL_RESORT_AREA].map((area) => (
+                <label className="search-check-item" key={area}>
+                  <input
+                    type="checkbox"
+                    checked={areas.includes(area)}
+                    onChange={() => {
+                      setPage(1);
+                      setAreas((current) => toggleValue(current, area));
+                    }}
+                  />
+                  <span className="search-check-item__box" aria-hidden="true" />
+                  <span className="search-check-item__label">
+                    {area === HOTEL_RESORT_AREA ? area : `福岡県 ${area}`}
+                  </span>
+                </label>
               ))}
-              <option value={HOTEL_RESORT_AREA}>{HOTEL_RESORT_AREA}</option>
-            </select>
-          </div>
+            </div>
+          </fieldset>
 
           <fieldset className="search-filter-group">
             <legend className="filter-label">ケア種別</legend>
@@ -289,28 +365,14 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
                   <input
                     type="checkbox"
                     checked={types.includes(type)}
-                    onChange={() => setTypes((current) => toggleValue(current, type))}
+                    onChange={() => {
+                      setPage(1);
+                      setTypes((current) => toggleValue(current, type));
+                    }}
                   />
                   <span className="search-check-item__box" aria-hidden="true" />
                   <span className="search-check-item__label">{CARE_TYPE_LABEL[type]}</span>
                   <span className={`search-check-item__dot search-check-item__dot--${type}`} aria-hidden="true" />
-                </label>
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset className="search-filter-group">
-            <legend className="filter-label">こだわり条件</legend>
-            <div className="search-check-list">
-              {FEATURE_OPTIONS.map((feature) => (
-                <label className="search-check-item" key={feature}>
-                  <input
-                    type="checkbox"
-                    checked={features.includes(feature)}
-                    onChange={() => setFeatures((current) => toggleValue(current, feature))}
-                  />
-                  <span className="search-check-item__box" aria-hidden="true" />
-                  <span className="search-check-item__label">{FEATURE_LABEL[feature]}</span>
                 </label>
               ))}
             </div>
@@ -358,7 +420,15 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
           </p>
           <div className="search-sort">
             <label htmlFor="facility-sort">並び替え</label>
-            <select id="facility-sort" className="filter-select" value={sort} onChange={(event) => setSort(event.target.value as SortMode)}>
+            <select
+              id="facility-sort"
+              className="filter-select"
+              value={sort}
+              onChange={(event) => {
+                setPage(1);
+                setSort(event.target.value as SortMode);
+              }}
+            >
               <option value="recommend">掲載順</option>
               <option value="name">施設名順</option>
             </select>
@@ -381,16 +451,13 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
           </div>
         ) : (
           <section className="facility-grid" aria-label="施設一覧">
-            {sorted.map((facility) => {
+            {pagedFacilities.map((facility) => {
               const isFavorite = favorites.has(facility.id);
               const price = getPriceDisplay(facility, { residence });
               return (
-                <article className="facility-card" key={facility.id}>
+                <article className="facility-card" id={`facility-${facility.id}`} key={facility.id}>
                   <div className={`facility-card__img search-photo--${facility.photoVariant}`}>
                     <span aria-hidden="true">{facility.icon}</span>
-                    <span className={`availability-badge availability-badge--${facility.availability === "ok" ? "green" : "yellow"}`}>
-                      {AVAILABILITY_LABEL[facility.availability]}
-                    </span>
                     <button
                       type="button"
                       className={`search-favorite${isFavorite ? " is-favorite" : ""}`}
@@ -425,7 +492,10 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
                       <p className={`facility-card__price${price.isInquiry ? " is-inquiry" : ""}`}>
                         {price.label}
                       </p>
-                      <Link href={`/facility/${facility.id}`} className="btn btn--primary btn--sm facility-card__detail-btn">
+                      <Link
+                        href={`/facility/${facility.id}?page=${currentPage}${showFavorites ? "&favorites=1" : ""}`}
+                        className="btn btn--primary btn--sm facility-card__detail-btn"
+                      >
                         詳細を見る
                       </Link>
                     </div>
@@ -434,6 +504,37 @@ export default function FacilitySearch({ initialFacilities }: { initialFacilitie
               );
             })}
           </section>
+        )}
+
+        {totalPages > 1 && (
+          <nav className="search-pagination" aria-label="施設一覧のページ送り">
+            <button
+              type="button"
+              onClick={() => changePage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              前へ
+            </button>
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+              <button
+                type="button"
+                key={pageNumber}
+                className={pageNumber === currentPage ? "is-current" : undefined}
+                aria-current={pageNumber === currentPage ? "page" : undefined}
+                aria-label={`${pageNumber}ページ目`}
+                onClick={() => changePage(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => changePage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              次へ
+            </button>
+          </nav>
         )}
       </div>
 

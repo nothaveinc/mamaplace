@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HomeFacilitySearch from "@/components/HomeFacilitySearch";
 import QualityMetrics from "@/components/QualityMetrics";
 import SubsidySimulator from "@/components/SubsidySimulator";
 
@@ -108,6 +109,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <HomeFacilitySearch />
 
       {/* Features */}
       <section className="features">

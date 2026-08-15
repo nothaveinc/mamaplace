@@ -1,17 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent as ReactMouseEvent } from "react";
 
 const links = [
   { href: "/#subsidy", label: "公費シミュレーター" },
   { href: "/search", label: "施設を探す" },
+  { href: "/search?favorites=1", label: "お気に入り" },
   { href: "/#about", label: "このサービスについて" },
 ];
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const reloadFavoriteSearch = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    window.location.assign(event.currentTarget.href);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -41,7 +47,9 @@ export default function Nav() {
         <ul className="nav__links">
           {links.map((link) => (
             <li key={link.href}>
-              <Link href={link.href}>{link.label}</Link>
+              <Link href={link.href} onClick={link.href.includes("favorites=1") ? reloadFavoriteSearch : undefined}>
+                {link.label}
+              </Link>
             </li>
           ))}
         </ul>
@@ -60,7 +68,13 @@ export default function Nav() {
         <ul>
           {links.map((link) => (
             <li key={link.href}>
-              <Link href={link.href} onClick={() => setMenuOpen(false)}>
+              <Link
+                href={link.href}
+                onClick={(event) => {
+                  setMenuOpen(false);
+                  if (link.href.includes("favorites=1")) reloadFavoriteSearch(event);
+                }}
+              >
                 {link.label}
               </Link>
             </li>

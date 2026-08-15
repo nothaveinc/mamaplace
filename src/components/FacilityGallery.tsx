@@ -3,14 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import type { StaticImageData } from "next/image";
-import type { Availability } from "@/data/facilities";
 
 export type GalleryImageSource = string | StaticImageData;
 
 type FacilityGalleryProps = {
   images: GalleryImageSource[];
   facilityName: string;
-  availability: Availability;
 };
 
 function GalleryImage({ src, alt }: { src: GalleryImageSource; alt: string }) {
@@ -25,7 +23,6 @@ function GalleryImage({ src, alt }: { src: GalleryImageSource; alt: string }) {
 export default function FacilityGallery({
   images,
   facilityName,
-  availability,
 }: FacilityGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const hasControls = images.length >= 2;
@@ -51,13 +48,6 @@ export default function FacilityGallery({
           src={images[selectedIndex]}
           alt={`${facilityName}の写真 ${selectedIndex + 1}`}
         />
-        <span
-          className={`facility-detail__badge availability-badge availability-badge--${
-            availability === "ok" ? "green" : "yellow"
-          }`}
-        >
-          {availability === "ok" ? "空きあり" : "残りわずか"}
-        </span>
         {hasControls && (
           <>
             <button
