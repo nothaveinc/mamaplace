@@ -16,6 +16,7 @@ const DEFAULT_SEARCH_FILTERS: SearchInitialFilters = {
   facilityFilter: "all",
   areas: [],
   types: [],
+  ageMonth: null,
   showFavorites: false,
   page: 1,
   hasSearchConditions: false,

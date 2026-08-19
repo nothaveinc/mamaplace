@@ -2,7 +2,7 @@
 
 import Form from "next/form";
 import { useState } from "react";
-import { AREAS, CARE_TYPE_OPTIONS, HOTEL_RESORT_AREA } from "@/data/facilities";
+import { AGE_MONTH_OPTIONS, AREAS, CARE_TYPE_OPTIONS, HOTEL_RESORT_AREA } from "@/data/facilities";
 import type { CareType } from "@/data/subsidy";
 
 type Residence = "" | "福岡市" | "福岡市外";
@@ -26,6 +26,7 @@ export default function HomeFacilitySearch() {
   const [subsidyFilterError, setSubsidyFilterError] = useState(false);
   const [areas, setAreas] = useState<string[]>([]);
   const [types, setTypes] = useState<CareType[]>([]);
+  const [ageMonth, setAgeMonth] = useState("");
 
   const handleFacilityFilterChange = (value: FacilityFilter) => {
     if (value === "subsidy" && residence === "") {
@@ -39,9 +40,10 @@ export default function HomeFacilitySearch() {
   const clearFilters = () => {
     setAreas([]);
     setTypes([]);
+    setAgeMonth("");
   };
 
-  const activeFilterCount = areas.length + types.length;
+  const activeFilterCount = areas.length + types.length + (ageMonth === "" ? 0 : 1);
 
   return (
     <section id="facility-search" className="home-facility-search" aria-labelledby="home-facility-search-title">
@@ -142,6 +144,21 @@ export default function HomeFacilitySearch() {
                 ))}
               </div>
             </fieldset>
+
+            <div className="home-facility-search__field">
+              <label htmlFor="home-search-age">月齢</label>
+              <select
+                id="home-search-age"
+                name="age"
+                value={ageMonth}
+                onChange={(event) => setAgeMonth(event.target.value)}
+              >
+                <option value="">選択してください</option>
+                {AGE_MONTH_OPTIONS.map((month) => (
+                  <option value={month} key={month}>{month}ヶ月</option>
+                ))}
+              </select>
+            </div>
 
             <div className="home-facility-search__actions">
               <button type="submit" className="btn btn--primary home-facility-search__submit">

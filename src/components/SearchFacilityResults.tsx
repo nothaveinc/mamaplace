@@ -37,6 +37,14 @@ function getInitialFilters(params: URLSearchParams): SearchInitialFilters {
   const types = params.getAll("type").filter(
     (type): type is CareType => CARE_TYPE_OPTIONS.includes(type as CareType),
   );
+  const requestedAgeMonth = Number(params.get("age"));
+  const ageMonth =
+    params.has("age") &&
+    Number.isInteger(requestedAgeMonth) &&
+    requestedAgeMonth >= 0 &&
+    requestedAgeMonth <= 11
+      ? requestedAgeMonth
+      : null;
   const showFavorites = params.get("favorites") === "1";
   const requestedPage = Number(params.get("page"));
   const page = Number.isInteger(requestedPage) && requestedPage > 1 ? requestedPage : 1;
@@ -46,6 +54,7 @@ function getInitialFilters(params: URLSearchParams): SearchInitialFilters {
     facilityFilter,
     areas,
     types,
+    ageMonth,
     showFavorites,
     page,
     hasSearchConditions:
@@ -53,6 +62,7 @@ function getInitialFilters(params: URLSearchParams): SearchInitialFilters {
       facilityFilter !== "all" ||
       areas.length > 0 ||
       types.length > 0 ||
+      ageMonth !== null ||
       showFavorites,
   };
 }

@@ -78,14 +78,39 @@ export const HOTEL_RESORT_AREA = "全国（ホテル・リゾート）";
 
 export const CARE_TYPE_OPTIONS: CareType[] = ["宿泊型", "通所型", "訪問型"];
 
+export const AGE_MONTH_OPTIONS = Array.from({ length: 12 }, (_, month) => month);
+
 export const FEATURE_OPTIONS = ["公費助成対象", "自費プランあり"] as const;
 
 const AGE_LIMIT_UNKNOWN = "施設へご確認ください";
+
+export function acceptsAgeMonth(ageLimit: string, month: number): boolean {
+  const normalizedAgeLimit = ageLimit.replace(/[ヶケカ]/g, "か");
+  const minimumMonth = normalizedAgeLimit.match(/(\d+)か月以上/)?.[1];
+  const maximumMonth = normalizedAgeLimit.match(/(\d+)か月未満/)?.[1];
+  const maximumYear = normalizedAgeLimit.match(/(\d+)歳未満/)?.[1];
+
+  if (!minimumMonth && !maximumMonth && !maximumYear) return false;
+
+  const minimum = minimumMonth ? Number(minimumMonth) : 0;
+  const maximum = maximumMonth
+    ? Number(maximumMonth)
+    : maximumYear
+      ? Number(maximumYear) * 12
+      : Number.POSITIVE_INFINITY;
+
+  return month >= minimum && month < maximum;
+}
 
 const FUKUOKA_CITY_WARDS = ["東区", "博多区", "中央区", "南区", "城南区", "早良区", "西区"];
 
 export const FACILITY_SHEET_URL =
   "https://script.google.com/macros/s/AKfycbzvrVwJNqxq5G668Y6cHb8ED11PaG3xh7HYe0td3GGLRtOYK2qZzQpCjUfb4IRu1gp3/exec";
+
+const FACILITY_SHEET_REQUEST_URL =
+  typeof window === "undefined"
+    ? `${FACILITY_SHEET_URL}?build=${Date.now()}`
+    : FACILITY_SHEET_URL;
 
 type RawFacilityRow = {
   ID: number;
@@ -199,7 +224,10 @@ function parseFacilityRow(row: RawFacilityRow): Facility {
 }
 
 export async function fetchFacilities(): Promise<Facility[]> {
-  const res = await fetch(FACILITY_SHEET_URL);
+  const res = await fetch(
+    FACILITY_SHEET_REQUEST_URL,
+    typeof window === "undefined" ? undefined : { cache: "no-store" },
+  );
   if (!res.ok) {
     throw new Error(`施設データの取得に失敗しました (status: ${res.status})`);
   }

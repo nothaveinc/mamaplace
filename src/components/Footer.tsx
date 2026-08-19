@@ -48,9 +48,6 @@ export default function Footer() {
               <li>
                 <Link href="/terms">利用規約</Link>
               </li>
-              <li>
-                <Link href="/tokutei">特定商取引法</Link>
-              </li>
             </ul>
           </div>
         </div>

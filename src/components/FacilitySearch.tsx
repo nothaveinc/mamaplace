@@ -4,13 +4,16 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   AREAS,
+  AGE_MONTH_OPTIONS,
   CARE_TYPE_OPTIONS,
   HOTEL_RESORT_AREA,
+  acceptsAgeMonth,
   fetchFacilities,
   type Facility,
 } from "@/data/facilities";
 import { getPriceDisplay } from "@/data/fukuokaSubsidy";
 import type { CareType } from "@/data/subsidy";
+import { announceDrawerOpen, subscribeToDrawerOpen } from "@/lib/drawerEvents";
 
 type SortMode = "recommend" | "name";
 export type Residence = "" | "福岡市" | "福岡市外";
@@ -21,6 +24,7 @@ export type SearchInitialFilters = {
   facilityFilter: FacilityFilter;
   areas: string[];
   types: CareType[];
+  ageMonth: number | null;
   showFavorites: boolean;
   page: number;
   hasSearchConditions: boolean;
@@ -85,11 +89,17 @@ export default function FacilitySearch({
   const [subsidyFilterError, setSubsidyFilterError] = useState(false);
   const [areas, setAreas] = useState<string[]>(initialFilters.areas);
   const [types, setTypes] = useState<CareType[]>(initialFilters.types);
+  const [ageMonth, setAgeMonth] = useState<number | null>(initialFilters.ageMonth);
   const [sort, setSort] = useState<SortMode>("recommend");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
   const [showFavorites] = useState(initialFilters.showFavorites);
   const [page, setPage] = useState(initialFilters.page);
+
+  const openFilterDrawer = () => {
+    announceDrawerOpen("search-filter");
+    setIsDrawerOpen(true);
+  };
 
   const handleFacilityFilterChange = (value: FacilityFilter) => {
     if (value === "subsidy" && residence === "") {
@@ -131,10 +141,17 @@ export default function FacilitySearch({
         setFavorites(new Set(favoriteIds.filter((id): id is string => typeof id === "string")));
       }
       if (!initialFilters.hasSearchConditions && window.matchMedia("(max-width: 640px)").matches) {
+        announceDrawerOpen("search-filter");
         setIsDrawerOpen(true);
       }
     });
   }, [initialFilters.hasSearchConditions]);
+
+  useEffect(() => {
+    return subscribeToDrawerOpen((drawer) => {
+      if (drawer !== "search-filter") setIsDrawerOpen(false);
+    });
+  }, []);
 
   useEffect(() => {
     if (!isDrawerOpen) return;
@@ -168,6 +185,7 @@ export default function FacilitySearch({
       ) {
         return false;
       }
+      if (ageMonth !== null && !acceptsAgeMonth(facility.ageLimit, ageMonth)) return false;
       return true;
     });
 
@@ -175,7 +193,7 @@ export default function FacilitySearch({
       list.sort((a, b) => a.name.localeCompare(b.name, "ja"));
     }
     return list;
-  }, [facilities, favorites, showFavorites, residence, facilityFilter, areas, types, sort]);
+  }, [facilities, favorites, showFavorites, residence, facilityFilter, areas, types, ageMonth, sort]);
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / FACILITIES_PER_PAGE));
   const currentPage = Math.min(page, totalPages);
@@ -212,9 +230,10 @@ export default function FacilitySearch({
     setPage(1);
     setAreas([]);
     setTypes([]);
+    setAgeMonth(null);
   };
 
-  const removeChip = (kind: "area" | "type", value: string) => {
+  const removeChip = (kind: "area" | "type" | "age", value: string) => {
     setPage(1);
     if (kind === "area") {
       setAreas((current) => current.filter((item) => item !== value));
@@ -222,6 +241,7 @@ export default function FacilitySearch({
     if (kind === "type") {
       setTypes((current) => current.filter((item) => item !== value));
     }
+    if (kind === "age") setAgeMonth(null);
   };
 
   const toggleFavorite = (id: string) => {
@@ -237,6 +257,7 @@ export default function FacilitySearch({
   const activeChips = [
     ...areas.map((value) => ({ kind: "area" as const, value })),
     ...types.map((value) => ({ kind: "type" as const, value })),
+    ...(ageMonth === null ? [] : [{ kind: "age" as const, value: `${ageMonth}ヶ月` }]),
   ];
 
   return (
@@ -366,6 +387,26 @@ export default function FacilitySearch({
               ))}
             </div>
           </fieldset>
+
+          <div className="filter-group search-filter-group">
+            <label className="filter-label" htmlFor="search-age">
+              月齢
+            </label>
+            <select
+              id="search-age"
+              className="filter-select"
+              value={ageMonth ?? ""}
+              onChange={(event) => {
+                setPage(1);
+                setAgeMonth(event.target.value === "" ? null : Number(event.target.value));
+              }}
+            >
+              <option value="">選択してください</option>
+              {AGE_MONTH_OPTIONS.map((month) => (
+                <option value={month} key={month}>{month}ヶ月</option>
+              ))}
+            </select>
+          </div>
 
           <div className="search-filter-actions">
             <button type="button" className="btn btn--primary btn--full search-filter-apply" onClick={() => setIsDrawerOpen(false)}>
@@ -527,7 +568,7 @@ export default function FacilitySearch({
         )}
       </div>
 
-      <button type="button" className="search-drawer-toggle" aria-controls="search-filter-sidebar" aria-expanded={isDrawerOpen} onClick={() => setIsDrawerOpen(true)}>
+      <button type="button" className="search-drawer-toggle" aria-controls="search-filter-sidebar" aria-expanded={isDrawerOpen} onClick={openFilterDrawer}>
         🔍 条件をしぼる
       </button>
     </div>

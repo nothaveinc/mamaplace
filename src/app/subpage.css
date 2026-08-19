@@ -58,15 +58,127 @@
 .legal-link { color: #E8A5B0; }
 .legal-link--strong { color: #E8A5B0; font-weight: 500; }
 
-/* ── 特定商取引法 ── */
-.tokutei-note {
-  background: #fdf6f8;
-  border-left: 4px solid #E8A5B0;
-  border-radius: 8px;
-  padding: 16px 20px;
-  margin-bottom: 32px;
+/* ── 施設掲載について ── */
+.listing-content {
+  max-width: 920px;
+  margin: 0 auto;
 }
-.tokutei-note p { margin-bottom: 0; font-size: 14px; }
+.listing-intro {
+  padding: 40px;
+  border: 1px solid #f0e8ec;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff 0%, #fdf6f8 100%);
+  box-shadow: 0 8px 24px rgba(45, 49, 66, 0.06);
+}
+.listing-eyebrow {
+  margin-bottom: 8px;
+  color: #C4738A;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.listing-intro h2,
+.listing-section > h2,
+.listing-cta h2 {
+  color: #2D3142;
+  font-family: var(--font-serif);
+}
+.listing-intro h2 {
+  margin-bottom: 16px;
+  font-size: clamp(23px, 4vw, 32px);
+  line-height: 1.5;
+}
+.listing-intro > p:last-child,
+.listing-section > p,
+.listing-detail-card p,
+.listing-flow p,
+.listing-cta p {
+  color: #5C6280;
+  line-height: 1.9;
+}
+.listing-section { margin-top: 56px; }
+.listing-section > h2 {
+  margin-bottom: 20px;
+  padding-left: 14px;
+  border-left: 4px solid #E8A5B0;
+  font-size: 24px;
+}
+.listing-targets,
+.listing-notes {
+  margin: 20px 0 0;
+  padding: 24px 24px 24px 48px;
+  border-radius: 16px;
+  background: #fdf6f8;
+  color: #5C6280;
+  line-height: 2;
+}
+.listing-note {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.listing-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.listing-detail-card {
+  padding: 24px;
+  border: 1px solid #f0e8ec;
+  border-radius: 16px;
+  background: #fff;
+}
+.listing-detail-card h3,
+.listing-flow h3 {
+  margin-bottom: 8px;
+  color: #2D3142;
+  font-size: 17px;
+}
+.listing-detail-card p,
+.listing-flow p { margin: 0; font-size: 14px; }
+.listing-flow {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.listing-flow li {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 22px 24px;
+  border: 1px solid #f0e8ec;
+  border-radius: 16px;
+  background: #fff;
+}
+.listing-flow__number {
+  display: flex;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #E8A5B0;
+  color: #fff;
+  font-weight: 700;
+}
+.listing-cta {
+  margin-top: 64px;
+  padding: 40px;
+  border-radius: 20px;
+  background: #fdf6f8;
+  text-align: center;
+}
+.listing-cta h2 { margin-bottom: 12px; font-size: 24px; }
+.listing-cta p { margin-bottom: 24px; }
+@media (max-width: 640px) {
+  .listing-intro,
+  .listing-cta { padding: 28px 20px; }
+  .listing-detail-grid { grid-template-columns: 1fr; }
+  .listing-section { margin-top: 44px; }
+  .listing-flow li { padding: 20px; }
+}
 
 /* ── FAQ アコーディオン ── */
 .faq-category { margin-bottom: 48px; }
