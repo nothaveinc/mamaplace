@@ -16,11 +16,38 @@ const HOUSEHOLD_LABELS: Record<SubsidyHousehold, string> = {
   welfare: "生活保護受給世帯",
 };
 
-const CARE_TYPES: { value: CareType; icon: string; note: string }[] = [
-  { value: "宿泊型", icon: "🏨", note: "（ショートステイ）" },
-  { value: "通所型", icon: "🏥", note: "（デイサービス）" },
-  { value: "訪問型", icon: "🚗", note: "（アウトリーチ）" },
+const CARE_TYPES: { value: CareType; note: string }[] = [
+  { value: "宿泊型", note: "（ショートステイ）" },
+  { value: "通所型", note: "（デイサービス）" },
+  { value: "訪問型", note: "（アウトリーチ）" },
 ];
+
+function CareTypeIcon({ type }: { type: CareType }) {
+  if (type === "宿泊型") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M5 24V10M27 24v-9a3 3 0 0 0-3-3H12v8h15M5 20h22M8 12h4" />
+        <circle cx="9" cy="15.5" r="2.5" />
+      </svg>
+    );
+  }
+
+  if (type === "通所型") {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M6 26V10l10-5 10 5v16M3 26h26M12 26v-7h8v7M10 13h3M19 13h3" />
+        <path d="M16 9v6M13 12h6" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="m4 15 12-10 12 10M7 13.5V27h18V13.5M13 27v-8h6v8" />
+      <path d="M21.5 9.5c0-2 3-2.5 3.8-.6.8-1.9 3.8-1.4 3.8.6 0 2-3.8 4.2-3.8 4.2s-3.8-2.2-3.8-4.2Z" />
+    </svg>
+  );
+}
 
 type SimulationResult = {
   municipality: MunicipalitySubsidy;
@@ -188,7 +215,9 @@ export default function SubsidySimulator() {
                       onChange={() => setCareType(type.value)}
                     />
                     <span className="radio-box">
-                      <span className="radio-box__icon">{type.icon}</span>
+                      <span className="radio-box__icon">
+                        <CareTypeIcon type={type.value} />
+                      </span>
                       {type.value}
                       <small>{type.note}</small>
                     </span>

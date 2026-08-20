@@ -15,19 +15,19 @@ export default function SubpageHero({ title, path, parent }: Props) {
         "@type": "ListItem",
         position: 1,
         name: "ホーム",
-        item: "https://mama-place.com/",
+        item: "https://mamaplace.jp/",
       },
       ...(parent ? [{
         "@type": "ListItem",
         position: 2,
         name: parent.name,
-        item: `https://mama-place.com${parent.href}`,
+        item: `https://mamaplace.jp${parent.href}`,
       }] : []),
       {
         "@type": "ListItem",
         position: parent ? 3 : 2,
         name: title,
-        item: `https://mama-place.com${path}`,
+        item: `https://mamaplace.jp${path}`,
       },
     ],
   };

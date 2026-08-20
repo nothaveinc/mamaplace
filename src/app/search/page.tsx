@@ -31,7 +31,7 @@ export default async function SearchPage() {
     itemListElement: facilities.map((f, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `https://mama-place.com/facility/${f.id}`,
+      url: `https://mamaplace.jp/facility/${f.id}`,
       name: f.name,
     })),
   };

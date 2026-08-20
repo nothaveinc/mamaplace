@@ -1,15 +1,39 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import HomeFacilitySearch from "@/components/HomeFacilitySearch";
 import SubsidySimulator from "@/components/SubsidySimulator";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "MamaPlace",
+    locale: "ja_JP",
+    title: "MamaPlace｜福岡の産後ケア施設検索・公費助成シミュレーター",
+    description:
+      "福岡市の公費助成対象施設と福岡県内の自費ホテルをまとめて検索。公費助成利用時の自己負担額も手軽に分かります。",
+    url: "/",
+    images: [
+      {
+        url: "/assets/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "MamaPlace｜産後ケア施設と公費助成がすぐわかる",
+      },
+    ],
+  },
+};
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://mama-place.com/#website",
-      url: "https://mama-place.com/",
+      "@id": "https://mamaplace.jp/#website",
+      url: "https://mamaplace.jp/",
       name: "MamaPlace",
       description:
         "産後のお母さんが最適なケアを受けられるよう、公費助成シミュレーターと施設マッチングを無料提供するWebプラットフォーム",
@@ -17,22 +41,22 @@ const jsonLd = {
     },
     {
       "@type": "Organization",
-      "@id": "https://mama-place.com/#organization",
-      url: "https://mama-place.com/",
+      "@id": "https://mamaplace.jp/#organization",
+      url: "https://mamaplace.jp/",
       name: "MamaPlace",
       description: "医療×美容の視点で、産後ケアの質を届けるWebプラットフォーム",
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer service",
-        url: "https://mama-place.com/contact",
+        url: "https://mamaplace.jp/contact",
         availableLanguage: "Japanese",
       },
     },
     {
       "@type": "WebApplication",
-      "@id": "https://mama-place.com/#app",
+      "@id": "https://mamaplace.jp/#app",
       name: "MamaPlace",
-      url: "https://mama-place.com/",
+      url: "https://mamaplace.jp/",
       applicationCategory: "HealthApplication",
       description: "公費助成シミュレーターと産後ケア施設マッチングを無料で提供",
       offers: {
