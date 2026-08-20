@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   AREAS,
   AGE_MONTH_OPTIONS,
   CARE_TYPE_OPTIONS,
-  HOTEL_RESORT_AREA,
   acceptsAgeMonth,
   fetchFacilities,
   type Facility,
@@ -14,6 +14,15 @@ import {
 import { getPriceDisplay } from "@/data/fukuokaSubsidy";
 import type { CareType } from "@/data/subsidy";
 import { announceDrawerOpen, subscribeToDrawerOpen } from "@/lib/drawerEvents";
+import demo1 from "@/assets/facility-demo/demo-1.svg";
+import demo2 from "@/assets/facility-demo/demo-2.svg";
+import demo3 from "@/assets/facility-demo/demo-3.svg";
+
+const DEMO_IMAGES_BY_VARIANT = {
+  a: demo1,
+  b: demo2,
+  c: demo3,
+} as const;
 
 type SortMode = "recommend" | "name";
 export type Residence = "" | "福岡市" | "福岡市外";
@@ -95,6 +104,7 @@ export default function FacilitySearch({
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
   const [showFavorites] = useState(initialFilters.showFavorites);
   const [page, setPage] = useState(initialFilters.page);
+  const sidebarRef = useRef<HTMLElement>(null);
 
   const openFilterDrawer = () => {
     announceDrawerOpen("search-filter");
@@ -163,6 +173,48 @@ export default function FacilitySearch({
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [isDrawerOpen]);
 
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    const panel = sidebar?.querySelector<HTMLElement>(".search-filter-panel");
+    const clearButton = panel?.querySelector<HTMLElement>(".search-filter-clear");
+    const footer = document.querySelector<HTMLElement>(".footer");
+    if (!sidebar || !panel || !clearButton || !footer) return;
+
+    let animationFrame = 0;
+    const updateFooterInset = () => {
+      animationFrame = 0;
+      const inset = Math.max(0, window.innerHeight - footer.getBoundingClientRect().top);
+      sidebar.style.setProperty("--search-footer-inset", `${inset}px`);
+
+      const panelRect = panel.getBoundingClientRect();
+      const clearButtonRect = clearButton.getBoundingClientRect();
+      const panelPaddingBottom = Number.parseFloat(window.getComputedStyle(panel).paddingBottom);
+      const contentBottom =
+        clearButtonRect.bottom - panelRect.top + panel.scrollTop + panelPaddingBottom;
+      const maxScrollTop = Math.max(0, contentBottom - panel.clientHeight);
+      if (panel.scrollTop > maxScrollTop) panel.scrollTop = maxScrollTop;
+    };
+    const scheduleUpdate = () => {
+      if (animationFrame === 0) {
+        animationFrame = window.requestAnimationFrame(updateFooterInset);
+      }
+    };
+
+    updateFooterInset();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    const panelResizeObserver = new ResizeObserver(scheduleUpdate);
+    panelResizeObserver.observe(panel);
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      panelResizeObserver.disconnect();
+      if (animationFrame !== 0) window.cancelAnimationFrame(animationFrame);
+      sidebar.style.removeProperty("--search-footer-inset");
+    };
+  }, []);
+
   const sorted = useMemo(() => {
     const list = facilities.filter((facility) => {
       if (showFavorites && !favorites.has(facility.id)) return false;
@@ -171,11 +223,7 @@ export default function FacilitySearch({
       if (facilityFilter === "non-subsidy" && facility.subsidyApplicable) return false;
       if (
         areas.length > 0 &&
-        !areas.some((area) =>
-          area === HOTEL_RESORT_AREA
-            ? facility.isHotelResort
-            : facility.ward === area,
-        )
+        !areas.some((area) => facility.ward === area)
       ) {
         return false;
       }
@@ -263,6 +311,7 @@ export default function FacilitySearch({
   return (
     <div className="search-page">
       <aside
+        ref={sidebarRef}
         id="search-filter-sidebar"
         className={`search-sidebar${isDrawerOpen ? " is-open" : ""}`}
         aria-label="施設検索の絞り込み"
@@ -348,7 +397,7 @@ export default function FacilitySearch({
           <fieldset className="search-filter-group">
             <legend className="filter-label">施設の場所</legend>
             <div className="search-check-list search-area-list">
-              {[...AREAS, HOTEL_RESORT_AREA].map((area) => (
+              {AREAS.map((area) => (
                 <label className="search-check-item" key={area}>
                   <input
                     type="checkbox"
@@ -360,7 +409,7 @@ export default function FacilitySearch({
                   />
                   <span className="search-check-item__box" aria-hidden="true" />
                   <span className="search-check-item__label">
-                    {area === HOTEL_RESORT_AREA ? area : `福岡県 ${area}`}
+                    福岡県 {area}
                   </span>
                 </label>
               ))}
@@ -487,7 +536,23 @@ export default function FacilitySearch({
               return (
                 <article className="facility-card" id={`facility-${facility.id}`} key={facility.id}>
                   <div className={`facility-card__img search-photo--${facility.photoVariant}`}>
-                    <span aria-hidden="true">{facility.icon}</span>
+                    {facility.photos[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={facility.photos[0]}
+                        alt={`${facility.name}の写真`}
+                        width={800}
+                        height={600}
+                      />
+                    ) : (
+                      <Image
+                        src={DEMO_IMAGES_BY_VARIANT[facility.photoVariant]}
+                        alt={`${facility.name}のイメージ画像`}
+                        width={800}
+                        height={600}
+                        unoptimized
+                      />
+                    )}
                     <button
                       type="button"
                       className={`search-favorite${isFavorite ? " is-favorite" : ""}`}

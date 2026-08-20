@@ -2,7 +2,7 @@
 
 import Form from "next/form";
 import { useState } from "react";
-import { AGE_MONTH_OPTIONS, AREAS, CARE_TYPE_OPTIONS, HOTEL_RESORT_AREA } from "@/data/facilities";
+import { AGE_MONTH_OPTIONS, AREAS, CARE_TYPE_OPTIONS } from "@/data/facilities";
 import type { CareType } from "@/data/subsidy";
 
 type Residence = "" | "福岡市" | "福岡市外";
@@ -109,7 +109,7 @@ export default function HomeFacilitySearch() {
             <fieldset className="home-facility-search__group">
               <legend>施設の場所</legend>
               <div className="home-facility-search__choices home-facility-search__choices--areas">
-                {[...AREAS, HOTEL_RESORT_AREA].map((area) => (
+                {AREAS.map((area) => (
                   <label className="home-facility-search__choice" key={area}>
                     <input
                       type="checkbox"
@@ -119,7 +119,7 @@ export default function HomeFacilitySearch() {
                       onChange={() => setAreas((current) => toggleValue(current, area))}
                     />
                     <span className="home-facility-search__choice-box" aria-hidden="true" />
-                    <span>{area === HOTEL_RESORT_AREA ? area : `福岡県 ${area}`}</span>
+                    <span>福岡県 {area}</span>
                   </label>
                 ))}
               </div>

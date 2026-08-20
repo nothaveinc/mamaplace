@@ -58,7 +58,7 @@ export default function Home() {
       <section className="hero">
         <Image
           className="hero__image"
-          src="/mamaplace/assets/images/hero-mother-baby.png"
+          src="/assets/images/hero-mother-baby.png"
           alt="赤ちゃんを抱くお母さん"
           fill
           preload

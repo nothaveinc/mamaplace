@@ -7,7 +7,7 @@ import { announceDrawerOpen, subscribeToDrawerOpen } from "@/lib/drawerEvents";
 const links = [
   { href: "/#subsidy", label: "公費シミュレーター", icon: "subsidy" },
   { href: "/search", label: "施設を探す", icon: "search" },
-  { href: "/search?favorites=1", label: "お気に入り", icon: "favorite" },
+  { href: "/search.html?favorites=1", label: "お気に入り", icon: "favorite" },
   { href: "/#about", label: "このサービスについて", icon: "about" },
 ];
 

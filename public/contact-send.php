@@ -112,7 +112,7 @@ if ($lastSentAt > 0 && time() - $lastSentAt < 30) {
 }
 
 $recipient = 'moeno.t.6612@gmail.com';
-$fromAddress = 'no-reply@mama-place.com';
+$fromAddress = 'contact@mamaplace.jp';
 $subject = '【MamaPlace】お問い合わせが届きました';
 date_default_timezone_set('Asia/Tokyo');
 $submittedAt = date('Y-m-d H:i:s');
@@ -130,26 +130,28 @@ $body = implode("\n", [
     '------------------------------',
 ]);
 
-mb_language('Japanese');
-mb_internal_encoding('UTF-8');
+$encodedSubject = mb_encode_mimeheader($subject, 'UTF-8', 'B', "\r\n");
+$encodedBody = rtrim(chunk_split(base64_encode($body), 76, "\r\n"));
 
 $headers = implode("\r\n", [
     'From: MamaPlace <' . $fromAddress . '>',
     'Reply-To: ' . $email,
+    'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: base64',
     'X-Mailer: PHP/' . PHP_VERSION,
 ]);
 
-$sent = mb_send_mail(
+$sent = mail(
     $recipient,
-    $subject,
-    $body,
+    $encodedSubject,
+    $encodedBody,
     $headers,
     '-f ' . $fromAddress
 );
 
 if (!$sent) {
-    error_log('MamaPlace contact form: mb_send_mail failed.');
+    error_log('MamaPlace contact form: mail failed.');
     respond(500, false, 'メールを送信できませんでした。');
 }
 

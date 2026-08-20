@@ -74,8 +74,6 @@ export const AREAS = [
   "大牟田市",
 ] as const;
 
-export const HOTEL_RESORT_AREA = "全国（ホテル・リゾート）";
-
 export const CARE_TYPE_OPTIONS: CareType[] = ["宿泊型", "通所型", "訪問型"];
 
 export const AGE_MONTH_OPTIONS = Array.from({ length: 12 }, (_, month) => month);

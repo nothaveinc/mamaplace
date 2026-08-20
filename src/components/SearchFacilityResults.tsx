@@ -10,7 +10,6 @@ import FacilitySearch, {
 import {
   AREAS,
   CARE_TYPE_OPTIONS,
-  HOTEL_RESORT_AREA,
   type Facility,
 } from "@/data/facilities";
 import type { CareType } from "@/data/subsidy";
@@ -32,7 +31,7 @@ function getInitialFilters(params: URLSearchParams): SearchInitialFilters {
       ? "all"
       : parsedFacilityFilter;
 
-  const allowedAreas = new Set<string>([...AREAS, HOTEL_RESORT_AREA]);
+  const allowedAreas = new Set<string>(AREAS);
   const areas = params.getAll("area").filter((area) => allowedAreas.has(area));
   const types = params.getAll("type").filter(
     (type): type is CareType => CARE_TYPE_OPTIONS.includes(type as CareType),
