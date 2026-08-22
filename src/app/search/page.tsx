@@ -5,10 +5,10 @@ import SearchFacilityResults from "@/components/SearchFacilityResults";
 import { fetchFacilities } from "@/data/facilities";
 
 export const metadata: Metadata = {
-  title: "施設を探す",
+  title: "福岡の産後ケア施設一覧",
   description:
-    "宿泊型・通所型・訪問型から、あなたに合った産後ケア施設を探せます。エリアや条件で絞り込み、口コミや料金を比較できます。",
-  alternates: { canonical: "/search" },
+    "福岡県内の産後ケア施設を一覧で掲載。福岡市の公費助成対象施設や自費の産後ケアホテルを、宿泊型・日帰り型・訪問型、エリア、対象月齢などから比較・検索できます。",
+  alternates: { canonical: "/search/" },
 };
 
 const DEFAULT_SEARCH_FILTERS: SearchInitialFilters = {
@@ -28,10 +28,12 @@ export default async function SearchPage() {
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
+    name: "福岡の産後ケア施設一覧",
+    numberOfItems: facilities.length,
     itemListElement: facilities.map((f, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `https://mamaplace.jp/facility/${f.id}`,
+      url: `https://mamaplace.jp/facility/${f.id}/`,
       name: f.name,
     })),
   };

@@ -24,7 +24,7 @@ export async function generateMetadata({
   return {
     title: facility.name,
     description: facility.description,
-    alternates: { canonical: `/facility/${id}` },
+    alternates: { canonical: `/facility/${id}/` },
   };
 }
 
@@ -44,12 +44,23 @@ export default async function FacilityDetailPage({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    "@id": `https://mamaplace.jp/facility/${facility.id}/#facility`,
+    url: `https://mamaplace.jp/facility/${facility.id}/`,
     name: facility.name,
     description: facility.description,
+    ...(facility.contact.phone ? { telephone: facility.contact.phone } : {}),
+    ...(facility.photos[0] ? { image: facility.photos[0] } : {}),
+    ...(facility.contact.website || facility.contact.instagram
+      ? {
+          sameAs: [facility.contact.website, facility.contact.instagram].filter(Boolean),
+        }
+      : {}),
     address: {
       "@type": "PostalAddress",
+      streetAddress: facility.addressDetail,
       addressRegion: facility.prefecture,
-      addressLocality: facility.addressDetail,
+      addressLocality: facility.isInFukuokaCity ? "福岡市" : facility.ward,
+      addressCountry: "JP",
     },
   };
 

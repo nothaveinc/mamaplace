@@ -197,6 +197,13 @@ function parseFacilityRow(row: RawFacilityRow): Facility {
   const selfPayPriceLabel =
     (row["価格（補助金料金・ホテル通常料金）"] ?? "").trim() || undefined;
   const meta = FACILITY_META[id] ?? DEFAULT_FACILITY_META;
+  const careTypeDescription = careTypes.length > 0
+    ? `${careTypes.join("・")}に対応`
+    : "提供するケアの種類は施設へ要確認";
+  const subsidyDescription = subsidyApplicable
+    ? `${targetMunicipality || "自治体"}の公費助成対象`
+    : "自費で利用可能";
+  const description = `${name}は福岡県${addressDetail}にある産後ケア施設です。${careTypeDescription}し、対象月齢は${ageLimit}です。${subsidyDescription}です。`;
 
   return {
     id,
@@ -217,7 +224,7 @@ function parseFacilityRow(row: RawFacilityRow): Facility {
     availability: "ok",
     icon: meta.icon,
     photoVariant: meta.photoVariant,
-    description: `${ward}にある産後ケア施設です。${careTypes.join("・")}に対応しています。`,
+    description,
   };
 }
 

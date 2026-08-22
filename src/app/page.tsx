@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "MamaPlace",
     locale: "ja_JP",
-    title: "MamaPlace｜福岡の産後ケア施設検索・公費助成シミュレーター",
+    title: "福岡の産後ケア施設を検索｜料金・公費助成も分かるMamaPlace",
     description:
       "福岡市の公費助成対象施設と福岡県内の自費ホテルをまとめて検索。公費助成利用時の自己負担額も手軽に分かります。",
     url: "/",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
         url: "/assets/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "MamaPlace｜産後ケア施設と公費助成がすぐわかる",
+        alt: "MamaPlace｜福岡の産後ケア施設と公費助成がすぐわかる",
       },
     ],
   },
@@ -48,7 +48,7 @@ const jsonLd = {
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer service",
-        url: "https://mamaplace.jp/contact",
+        url: "https://mamaplace.jp/contact/",
         availableLanguage: "Japanese",
       },
     },
@@ -82,7 +82,7 @@ export default function Home() {
       <section className="hero">
         <Image
           className="hero__image"
-          src="/assets/images/hero-mother-baby.png"
+          src="/assets/images/hero-mother-baby.webp"
           alt="赤ちゃんを抱くお母さん"
           fill
           preload
@@ -94,9 +94,9 @@ export default function Home() {
           <div className="hero__main">
             <p className="hero__tag">助産師監修</p>
             <h1 className="hero__title">
-              <span className="hero__title-lead"># 産後のあなたへ、</span>
+              <span className="hero__title-lead"># 福岡の産後ケアを、</span>
               <span className="hero__title-accent">
-                最適なケア<span>を。</span>
+                あなたらしく<span>選ぶ。</span>
               </span>
             </h1>
             <p className="hero__subtitle">

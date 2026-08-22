@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AnalyticsOptOut from "@/components/AnalyticsOptOut";
 import SubpageHero from "@/components/SubpageHero";
 
 export const metadata: Metadata = {
   title: "プライバシーポリシー",
   alternates: {
-    canonical: "/privacy",
+    canonical: "/privacy/",
   },
   robots: { index: false, follow: true },
 };
@@ -17,7 +18,7 @@ export default function PrivacyPage() {
 
       <main className="subpage-main">
         <article className="legal-content container">
-          <p className="legal-updated">制定・最終更新日：2026年8月20日</p>
+          <p className="legal-updated">制定・最終更新日：2026年8月22日</p>
 
           <p>
             産後ケアナビ（以下「当サービス」といいます。）は、利用者の個人情報を適切に取り扱うため、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます。）を定めます。
@@ -65,6 +66,7 @@ export default function PrivacyPage() {
             <li>掲載施設に関する確認、情報の更新および連絡</li>
             <li>不正利用、迷惑行為および連続送信の防止</li>
             <li>当サービスの運営、保守、障害調査および安全性の確保</li>
+            <li>利用状況の分析および当サービスの改善</li>
             <li>法令上の義務への対応および紛争への対応</li>
           </ul>
 
@@ -100,47 +102,50 @@ export default function PrivacyPage() {
             当サービスの運営に必要な範囲で、サーバー提供事業者であるエックスサーバー株式会社およびメールサービス提供事業者であるGoogleに、個人情報の取り扱いを委託することがあります。委託先を適切に選定し、必要かつ適切な監督に努めます。
           </p>
 
-          <h2>6. 外部サービスへの情報送信</h2>
-          <p>当サービスでは、次の外部サービスを利用しています。</p>
+          <h2 id="external-transmission">6. 外部サービスへの情報送信</h2>
+          <p>
+            当サービスでは、次の外部サービスを利用しています。送信先、送信される情報および利用目的は次のとおりです。
+          </p>
           <ul>
             <li>
               <strong>エックスサーバー：</strong>
-              当サービスの配信およびアクセスログの保存のために利用します。
+              送信先はエックスサーバー株式会社です。IPアドレス、アクセス日時、閲覧したURL、参照元、ブラウザ・端末情報などが送信されます。当サービスの配信、アクセスログの保存、障害調査および不正アクセス対策のために利用します。
             </li>
             <li>
               <strong>Google Fonts：</strong>
-              文字フォントの配信のために利用します。利用時に、IPアドレスやブラウザ情報などがGoogleへ送信される場合があります。
+              送信先はGoogle LLCです。IPアドレス、ブラウザ・端末情報、参照元などが送信される場合があります。当サービスでは文字フォントの配信に、Googleではフォントファイルの提供、維持およびセキュリティ確保に利用されます。
             </li>
             <li>
               <strong>Google Apps Script：</strong>
-              施設情報の取得・表示のために利用します。利用時に、IPアドレスやブラウザ情報、参照元などがGoogleへ送信される場合があります。
+              送信先はGoogle LLCです。IPアドレス、ブラウザ・端末情報、参照元などが送信される場合があります。当サービスでは施設情報の取得・表示に、Googleではサービスの提供、維持およびセキュリティ確保に利用されます。
             </li>
             <li>
               <strong>Google Analytics：</strong>
-              サービスの利用状況の把握および改善のために利用します。利用者がCookieの利用に同意した場合にのみ、閲覧したURL、参照元、ブラウザ・端末情報、おおよその地域、サイト内での操作に関する情報などがGoogleへ送信されます。広告目的のCookieおよびパーソナライズ広告には利用しません。
+              送信先はGoogle LLCです。閲覧したページのパス、ページ名、参照元、ブラウザ・端末情報、おおよその地域、アクセス日時、サイト内での操作に関する情報などが送信されます。施設検索の条件を含むクエリ文字列およびURLのハッシュは送信しません。当サービスでは利用状況の分析および改善に、Googleではアクセス解析サービスの提供、維持およびセキュリティ確保に利用されます。
             </li>
           </ul>
           <p>
-            Googleによる情報の取り扱いについては、
+            Google Analyticsは、解析用Cookieを読み書きしない設定で利用し、Googleシグナル、広告向けの識別子および広告のパーソナライズを無効にしています。IPアドレスはおおよその地域の判定などに使用された後、Google Analyticsに記録・保存されません。Googleによる情報の取り扱いについては、
             <a
-              href="https://policies.google.com/privacy?hl=ja"
+              href="https://support.google.com/analytics/answer/6004245?hl=ja"
               target="_blank"
               rel="noreferrer"
             >
-              Googleプライバシーポリシー
+              Google Analyticsのデータ保護に関する説明
             </a>
             をご確認ください。
           </p>
           <p>
-            Google Analyticsに送信されたユーザー単位およびイベント単位のデータの保持期間は2か月とします。利用者は、初回訪問時のCookie設定またはフッターの「Cookie設定」から、いつでもアクセス解析を拒否できます。
+            Google Analyticsに送信されたユーザー単位およびイベント単位のデータの保持期間は2か月とします。利用者は、次の設定からいつでもアクセス解析を停止できます。停止状態はこのブラウザのlocalStorageに保存されます。
           </p>
+          <AnalyticsOptOut />
 
           <h2>7. Cookieおよびブラウザ内の保存領域</h2>
           <p>
-            当サービスは、お問い合わせの連続送信を防止するため、必要最小限のセッションCookieを使用します。また、利用者が同意した場合にのみ、Google Analyticsのアクセス解析Cookieを使用します。
+            当サービスは、お問い合わせの連続送信を防止するため、必要最小限のセッションCookieを使用します。このCookieはお問い合わせ機能の安全な提供に必要なもので、ブラウザのセッション終了まで利用されます。Google Analyticsの解析用Cookieは使用しません。
           </p>
           <p>
-            Cookieの同意状態と、お気に入りに登録した施設の識別情報は、ブラウザのlocalStorageに保存されます。産後ケア費用シミュレーターに入力した情報はブラウザ内でのみ計算され、いずれも当サービスのサーバーには送信されません。ただし、施設検索の条件はURLに含まれるため、アクセスログに記録される場合があります。
+            アクセス解析の停止状態と、お気に入りに登録した施設の識別情報は、ブラウザのlocalStorageに保存されます。産後ケア費用シミュレーターに入力した情報はブラウザ内でのみ計算され、いずれも当サービスのサーバーには送信されません。ただし、施設検索の条件はURLに含まれるため、エックスサーバーのアクセスログに記録される場合があります。
           </p>
 
           <h2>8. 安全管理措置</h2>

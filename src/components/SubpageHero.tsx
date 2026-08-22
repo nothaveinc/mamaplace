@@ -6,6 +6,11 @@ type Props = {
   parent?: { name: string; href: string };
 };
 
+function getAbsolutePageUrl(path: string) {
+  const normalizedPath = path === "/" ? "/" : `${path.replace(/\/$/, "")}/`;
+  return `https://mamaplace.jp${normalizedPath}`;
+}
+
 export default function SubpageHero({ title, path, parent }: Props) {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -21,13 +26,13 @@ export default function SubpageHero({ title, path, parent }: Props) {
         "@type": "ListItem",
         position: 2,
         name: parent.name,
-        item: `https://mamaplace.jp${parent.href}`,
+        item: getAbsolutePageUrl(parent.href),
       }] : []),
       {
         "@type": "ListItem",
         position: parent ? 3 : 2,
         name: title,
-        item: `https://mamaplace.jp${path}`,
+        item: getAbsolutePageUrl(path),
       },
     ],
   };

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "施設掲載について",
   description:
     "MamaPlaceへの施設掲載をご希望の事業者さまへ。掲載対象、掲載情報、お申し込みから公開までの流れをご案内します。",
-  alternates: { canonical: "/listing" },
+  alternates: { canonical: "/listing/" },
 };
 
 const listingDetails = [

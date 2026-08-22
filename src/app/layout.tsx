@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import GoogleAnalyticsConsent from "@/components/GoogleAnalyticsConsent";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import {
+  GOOGLE_ANALYTICS_OPT_OUT_KEY,
+  getGoogleAnalyticsDisableKey,
+} from "@/lib/analytics";
 import "./globals.css";
 import "./style.css";
 import "./subpage.css";
@@ -9,7 +14,7 @@ import "./subpage.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://mamaplace.jp"),
   title: {
-    default: "MamaPlace｜福岡の産後ケア施設検索・公費助成シミュレーター",
+    default: "福岡の産後ケア施設を検索｜料金・公費助成も分かるMamaPlace",
     template: "%s｜MamaPlace",
   },
   description:
@@ -18,7 +23,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "MamaPlace",
     locale: "ja_JP",
-    title: "MamaPlace｜福岡の産後ケア施設検索・公費助成シミュレーター",
+    title: "福岡の産後ケア施設を検索｜料金・公費助成も分かるMamaPlace",
     description:
       "福岡市の公費助成対象施設と福岡県内の自費ホテルをまとめて検索。公費助成利用時の自己負担額も手軽に分かります。",
     images: [
@@ -26,13 +31,13 @@ export const metadata: Metadata = {
         url: "/assets/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "MamaPlace｜産後ケア施設と公費助成がすぐわかる",
+        alt: "MamaPlace｜福岡の産後ケア施設と公費助成がすぐわかる",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MamaPlace｜福岡の産後ケア施設検索・公費助成シミュレーター",
+    title: "福岡の産後ケア施設を検索｜料金・公費助成も分かるMamaPlace",
     description:
       "福岡市の公費助成対象施設と福岡県内の自費ホテルをまとめて検索できます。",
     images: ["/assets/images/og-image.png"],
@@ -63,10 +68,28 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <Script id="google-analytics-consent-default" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
+            window.gtag('consent', 'default', {
+              analytics_storage: 'denied',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied'
+            });
+            window.gtag('set', 'ads_data_redaction', true);
+            try {
+              if (window.localStorage.getItem(${JSON.stringify(GOOGLE_ANALYTICS_OPT_OUT_KEY)}) === 'true') {
+                window[${JSON.stringify(getGoogleAnalyticsDisableKey())}] = true;
+              }
+            } catch (error) {}
+          `}
+        </Script>
         <Nav />
         <main id="main-content">{children}</main>
         <Footer />
-        <GoogleAnalyticsConsent />
+        <GoogleAnalytics />
       </body>
     </html>
   );

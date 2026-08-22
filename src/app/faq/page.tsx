@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "よくある質問",
   description:
     "MamaPlaceのよくある質問。サービスの使い方、公費助成、施設情報についてお答えします。",
-  alternates: { canonical: "/faq" },
+  alternates: { canonical: "/faq/" },
 };
 
 const categories: FaqCategory[] = [

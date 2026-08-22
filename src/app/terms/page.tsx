@@ -4,7 +4,7 @@ import SubpageHero from "@/components/SubpageHero";
 
 export const metadata: Metadata = {
   title: "利用規約",
-  alternates: { canonical: "/terms" },
+  alternates: { canonical: "/terms/" },
   robots: { index: false, follow: true },
 };
 

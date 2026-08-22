@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { CookieSettingsButton } from "@/components/GoogleAnalyticsConsent";
 
 export default function Footer() {
   return (
@@ -50,7 +49,7 @@ export default function Footer() {
                 <Link href="/terms">利用規約</Link>
               </li>
               <li>
-                <CookieSettingsButton />
+                <Link href="/privacy#external-transmission">外部送信について</Link>
               </li>
             </ul>
           </div>

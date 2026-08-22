@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# 静的出力の旧 .html URLを正規URLへ恒久転送する。
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[\s?] [NC]
+RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L,NE]
+
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteRule ^(.+)\.html$ /$1/ [R=301,L,NE]

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "お問い合わせ",
   description:
     "MamaPlaceへのお問い合わせはこちらから。施設情報・公費助成・施設掲載についてのご質問を受け付けています。",
-  alternates: { canonical: "/contact" },
+  alternates: { canonical: "/contact/" },
 };
 
 export default function ContactPage() {

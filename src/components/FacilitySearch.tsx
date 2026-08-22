@@ -479,8 +479,8 @@ export default function FacilitySearch({
       <div className="search-main">
         <header className="search-hero">
           <div>
-            <h1>産後ケア施設を探す</h1>
-            <p>福岡エリアの宿泊型・通所型施設から、あなたに合ったケアを探せます。</p>
+            <h1>福岡の産後ケア施設一覧</h1>
+            <p>福岡県内の宿泊型・日帰り型・訪問型施設から、あなたに合ったケアを探せます。</p>
           </div>
           <Link className="search-hero__cta" href="/#subsidy">
             💰 公費助成シミュレーターで自己負担額をチェック <span aria-hidden="true">→</span>
