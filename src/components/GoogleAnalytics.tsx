@@ -43,18 +43,6 @@ function setGoogleAnalyticsDisabled(disabled: boolean) {
   analyticsWindow[getGoogleAnalyticsDisableKey()] = disabled;
 }
 
-function clearLegacyGoogleAnalyticsCookies() {
-  const rootDomain = window.location.hostname.replace(/^www\./, "");
-
-  document.cookie.split(";").forEach((cookie) => {
-    const name = cookie.split("=")[0]?.trim();
-    if (!name?.startsWith("_ga")) return;
-
-    document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax`;
-    document.cookie = `${name}=; Max-Age=0; path=/; domain=.${rootDomain}; SameSite=Lax`;
-  });
-}
-
 function getSanitizedReferrer() {
   if (!document.referrer) return "";
 
@@ -77,15 +65,6 @@ export default function GoogleAnalytics() {
   );
   const initialized = useRef(false);
   const lastTrackedPathname = useRef<string | null>(null);
-
-  useEffect(() => {
-    try {
-      window.localStorage.removeItem("mamaplace-analytics-consent");
-    } catch {
-      // localStorageを利用できない環境でもCookieなし計測は継続する。
-    }
-    clearLegacyGoogleAnalyticsCookies();
-  }, []);
 
   useEffect(() => {
     const storedOptOut = getStoredOptOut();

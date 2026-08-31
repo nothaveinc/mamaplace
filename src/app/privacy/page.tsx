@@ -125,7 +125,7 @@ export default function PrivacyPage() {
             </li>
           </ul>
           <p>
-            Google Analyticsは、解析用Cookieを読み書きしない設定で利用し、Googleシグナル、広告向けの識別子および広告のパーソナライズを無効にしています。IPアドレスはおおよその地域の判定などに使用された後、Google Analyticsに記録・保存されません。Googleによる情報の取り扱いについては、
+            当サービスでは、利用状況の分析およびサービス改善のため、Google Analyticsを使用しています。Google Analyticsは、アクセス情報を収集するためにCookieを使用する場合があります。Googleシグナル、広告向けの識別子および広告のパーソナライズは無効にしています。IPアドレスはおおよその地域の判定などに使用された後、Google Analyticsに記録・保存されません。Googleによる情報の取り扱いについては、
             <a
               href="https://support.google.com/analytics/answer/6004245?hl=ja"
               target="_blank"
@@ -142,7 +142,7 @@ export default function PrivacyPage() {
 
           <h2>7. Cookieおよびブラウザ内の保存領域</h2>
           <p>
-            当サービスは、お問い合わせの連続送信を防止するため、必要最小限のセッションCookieを使用します。このCookieはお問い合わせ機能の安全な提供に必要なもので、ブラウザのセッション終了まで利用されます。Google Analyticsの解析用Cookieは使用しません。
+            当サービスは、お問い合わせの連続送信を防止するため、必要最小限のセッションCookieを使用します。このCookieはお問い合わせ機能の安全な提供に必要なもので、ブラウザのセッション終了まで利用されます。また、Google Analyticsによる利用状況の分析のため、解析用Cookieを使用する場合があります。
           </p>
           <p>
             アクセス解析の停止状態と、お気に入りに登録した施設の識別情報は、ブラウザのlocalStorageに保存されます。産後ケア費用シミュレーターに入力した情報はブラウザ内でのみ計算され、いずれも当サービスのサーバーには送信されません。ただし、施設検索の条件はURLに含まれるため、エックスサーバーのアクセスログに記録される場合があります。

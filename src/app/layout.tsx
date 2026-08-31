@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
-import {
-  GOOGLE_ANALYTICS_OPT_OUT_KEY,
-  getGoogleAnalyticsDisableKey,
-} from "@/lib/analytics";
 import "./globals.css";
 import "./style.css";
 import "./subpage.css";
@@ -68,24 +63,6 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Script id="google-analytics-consent-default" strategy="beforeInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
-            window.gtag('consent', 'default', {
-              analytics_storage: 'denied',
-              ad_storage: 'denied',
-              ad_user_data: 'denied',
-              ad_personalization: 'denied'
-            });
-            window.gtag('set', 'ads_data_redaction', true);
-            try {
-              if (window.localStorage.getItem(${JSON.stringify(GOOGLE_ANALYTICS_OPT_OUT_KEY)}) === 'true') {
-                window[${JSON.stringify(getGoogleAnalyticsDisableKey())}] = true;
-              }
-            } catch (error) {}
-          `}
-        </Script>
         <Nav />
         <main id="main-content">{children}</main>
         <Footer />
