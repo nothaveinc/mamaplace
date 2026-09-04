@@ -82,7 +82,7 @@ export default function Home() {
       <section className="hero">
         <Image
           className="hero__image"
-          src="/assets/images/hero-mother-baby.webp"
+          src="/assets/images/home/mv.webp"
           alt="赤ちゃんを抱くお母さん"
           fill
           preload
@@ -94,15 +94,15 @@ export default function Home() {
           <div className="hero__main">
             <p className="hero__tag">助産師監修</p>
             <h1 className="hero__title">
-              <span className="hero__title-lead"># 福岡の産後ケアを、</span>
+              <span className="hero__title-lead">あなたの地域で利用できる</span>
               <span className="hero__title-accent">
-                あなたらしく<span>選ぶ。</span>
+                産後ケア<span>が見つかる。</span>
               </span>
             </h1>
             <p className="hero__subtitle">
               お住まいの地域や希望するケアに合わせて、
               <br className="hero__desktop-break" />
-              利用できる助成制度と産後ケア施設をわかりやすくご案内します。
+              <strong>利用できる助成制度</strong>と<strong>産後ケア施設</strong>をわかりやすくご案内します。
             </p>
           </div>
 
@@ -146,8 +146,12 @@ export default function Home() {
       {/* Subsidy Section */}
       <section className="subsidy" id="subsidy">
         <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">公費助成シミュレーター</h2>
+          <div className="section-header section-header--numbered">
+            <div className="numbered-section-heading">
+              <span className="numbered-section-heading__number" aria-hidden="true">02</span>
+              <span className="numbered-section-heading__divider" aria-hidden="true" />
+              <h2 className="section-title">公費助成を調べる</h2>
+            </div>
             <p className="section-desc">
               福岡市の産後ケア事業を利用した場合の自己負担額をシミュレーションできます。
             </p>

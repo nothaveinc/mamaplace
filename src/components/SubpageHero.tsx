@@ -4,6 +4,8 @@ type Props = {
   title: string;
   path: string;
   parent?: { name: string; href: string };
+  className?: string;
+  titleClassName?: string;
 };
 
 function getAbsolutePageUrl(path: string) {
@@ -11,7 +13,7 @@ function getAbsolutePageUrl(path: string) {
   return `https://mamaplace.jp${normalizedPath}`;
 }
 
-export default function SubpageHero({ title, path, parent }: Props) {
+export default function SubpageHero({ title, path, parent, className, titleClassName }: Props) {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -38,7 +40,7 @@ export default function SubpageHero({ title, path, parent }: Props) {
   };
 
   return (
-    <section className="subpage-hero">
+    <section className={`subpage-hero${className ? ` ${className}` : ""}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
@@ -57,7 +59,7 @@ export default function SubpageHero({ title, path, parent }: Props) {
             <li>{title}</li>
           </ol>
         </nav>
-        <h1 className="subpage-hero__title">{title}</h1>
+        <h1 className={`subpage-hero__title${titleClassName ? ` ${titleClassName}` : ""}`}>{title}</h1>
       </div>
     </section>
   );

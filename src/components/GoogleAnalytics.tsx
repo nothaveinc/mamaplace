@@ -12,7 +12,7 @@ import {
 
 declare global {
   interface Window {
-    dataLayer?: unknown[][];
+    dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
   }
 }
@@ -75,9 +75,11 @@ export default function GoogleAnalytics() {
     }
 
     window.dataLayer = window.dataLayer ?? [];
-    window.gtag = window.gtag ?? ((...args: unknown[]) => {
-      window.dataLayer?.push(args);
-    });
+    window.gtag = window.gtag ?? function gtag() {
+      // Google公式スニペットと同じArgumentsオブジェクトをキューへ渡す必要がある。
+      // eslint-disable-next-line prefer-rest-params
+      window.dataLayer?.push(arguments);
+    };
 
     if (!initialized.current) {
       initialized.current = true;

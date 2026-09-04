@@ -11,11 +11,8 @@ import {
   PREVIEW_PARKING,
 } from "@/data/previewSampleContent";
 import demo1 from "@/assets/facility-demo/demo-1.svg";
-import demo2 from "@/assets/facility-demo/demo-2.svg";
-import demo3 from "@/assets/facility-demo/demo-3.svg";
-import demo4 from "@/assets/facility-demo/demo-4.svg";
 
-const DEMO_IMAGES = [demo1, demo2, demo3, demo4];
+const DEMO_IMAGES = [demo1];
 
 const CARE_TYPE_LABEL = {
   宿泊型: "宿泊",
@@ -63,8 +60,7 @@ function ContactCard({
 }) {
   return (
     <aside className={`facility-detail__contact-card ${className}`}>
-      <h2>予約・お問い合わせ</h2>
-      <p>ご希望の方法でご連絡ください。</p>
+      <h2>ご予約・公式情報はこちら</h2>
       <div className="facility-detail__contact-links">
         {contactLinks.map((link) => (
           <a
@@ -151,6 +147,8 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
   if (facility.contact.email) {
     contactLinks.push({ label: "メール", icon: "✉️", href: `mailto:${facility.contact.email}` });
   }
+  const facilityAddress = `福岡県${facility.addressDetail}`;
+  const googleMapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(facilityAddress)}`;
   const basicInfoRows: { label: string; value: ReactNode; hasValue: boolean }[] = [
     {
       label: "連絡先",
@@ -159,39 +157,26 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
     },
     {
       label: "住所",
-      value: `福岡県${facility.addressDetail}`,
+      value: (
+        <div className="facility-detail__address">
+          <a href={googleMapsHref} target="_blank" rel="noreferrer">
+            {facilityAddress}
+          </a>
+          <a
+            className="facility-detail__map-link"
+            href={googleMapsHref}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${facility.name}の住所をGoogleマップで見る`}
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z" />
+            </svg>
+            <span>Googleマップ</span>
+          </a>
+        </div>
+      ),
       hasValue: Boolean(facility.addressDetail.trim()),
-    },
-    {
-      label: "対象月齢",
-      value: facility.ageLimit,
-      hasValue: Boolean(facility.ageLimit.trim()),
-    },
-    {
-      label: "提供しているケアのタイプ",
-      value: (
-        <div className="facility-detail__types">
-          {facility.careTypes.map((careType) => (
-            <span
-              className={`facility-detail__type facility-detail__care-type--${careType}`}
-              key={careType}
-            >
-              {CARE_TYPE_LABEL[careType]}
-            </span>
-          ))}
-        </div>
-      ),
-      hasValue: facility.careTypes.length > 0,
-    },
-    {
-      label: "価格の目安",
-      value: (
-        <div className="facility-detail__price">
-          {price.lines.map((line) => <p key={line}>{line}</p>)}
-          {price.note && <small>{price.note}</small>}
-        </div>
-      ),
-      hasValue: price.lines.length > 0,
     },
     {
       label: "駐車場",
@@ -216,7 +201,7 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
   ];
 
   return (
-    <div className="subpage-main">
+    <div className="subpage-main facility-detail-page">
       <div className="container">
         <div
           className={`facility-detail__top${
@@ -325,7 +310,7 @@ export default function FacilityDetail({ initialFacility }: { initialFacility: F
         )}
 
         <div className="facility-detail__footer-cta">
-          <Link href={`/search${returnSearchQuery ? `?${returnSearchQuery}` : ""}#facility-${facility.id}`} className="btn btn--outline">
+          <Link href={`/search${returnSearchQuery ? `?${returnSearchQuery}` : ""}#facility-${facility.id}`} className="btn btn--outline facility-detail__back-link">
             施設一覧に戻る
           </Link>
         </div>

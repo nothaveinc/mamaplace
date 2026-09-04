@@ -2,6 +2,7 @@
 
 import Form from "next/form";
 import { useState } from "react";
+import MultiSelectDropdown from "@/components/MultiSelectDropdown";
 import { AGE_MONTH_OPTIONS, AREAS, CARE_TYPE_OPTIONS } from "@/data/facilities";
 import type { CareType } from "@/data/subsidy";
 
@@ -13,6 +14,11 @@ const CARE_TYPE_LABEL: Record<CareType, string> = {
   通所型: "日帰り",
   訪問型: "訪問",
 };
+
+const AREA_OPTIONS = AREAS.map((area) => ({
+  value: area,
+  label: `福岡県 ${area}`,
+}));
 
 function toggleValue<T extends string>(list: T[], value: T): T[] {
   return list.includes(value)
@@ -50,8 +56,11 @@ export default function HomeFacilitySearch() {
       <div className="container">
         <div className="home-facility-search__card">
           <div className="home-facility-search__heading">
-            <p className="home-facility-search__eyebrow">あなたに合う施設を探す</p>
-            <h2 id="home-facility-search-title">条件から産後ケア施設を検索</h2>
+            <div className="numbered-section-heading numbered-section-heading--red">
+              <span className="numbered-section-heading__number" aria-hidden="true">01</span>
+              <span className="numbered-section-heading__divider" aria-hidden="true" />
+              <h2 id="home-facility-search-title">施設を探す</h2>
+            </div>
           </div>
 
           <Form action="/search" className="home-facility-search__form">
@@ -106,24 +115,14 @@ export default function HomeFacilitySearch() {
               </fieldset>
             </div>
 
-            <fieldset className="home-facility-search__group">
-              <legend>施設の場所</legend>
-              <div className="home-facility-search__choices home-facility-search__choices--areas">
-                {AREAS.map((area) => (
-                  <label className="home-facility-search__choice" key={area}>
-                    <input
-                      type="checkbox"
-                      name="area"
-                      value={area}
-                      checked={areas.includes(area)}
-                      onChange={() => setAreas((current) => toggleValue(current, area))}
-                    />
-                    <span className="home-facility-search__choice-box" aria-hidden="true" />
-                    <span>福岡県 {area}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
+            <MultiSelectDropdown
+              id="home-search-areas"
+              label="施設の場所"
+              name="area"
+              options={AREA_OPTIONS}
+              values={areas}
+              onToggle={(area) => setAreas((current) => toggleValue(current, area))}
+            />
 
             <fieldset className="home-facility-search__group">
               <legend>ケア種別</legend>

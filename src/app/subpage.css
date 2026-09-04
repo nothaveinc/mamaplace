@@ -27,7 +27,7 @@
   gap: 8px;
   width: max-content;
   list-style: none;
-  margin: 0 0 16px;
+  margin: 0 0 5px;
   padding: 0;
   font-size: 14px;
   color: var(--color-text-light, #9B9FBF);
@@ -35,7 +35,7 @@
 }
 .breadcrumb li { flex: none; }
 .breadcrumb ol li + li::before { content: "/"; margin-right: 8px; }
-.breadcrumb a { color: var(--color-primary, #E8A5B0); text-decoration: none; }
+.breadcrumb a { color: var(--color-primary, #DC5450); text-decoration: none; }
 .subpage-hero__title {
   font-family: var(--font-serif);
   font-size: clamp(28px, 5vw, 42px);
@@ -46,7 +46,7 @@
 
 /* ── 法的ページ ── */
 .legal-content { max-width: 860px; margin: 0 auto; }
-.legal-content h2 { font-size: 22px; color: #2D3142; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #E8A5B0; }
+.legal-content h2 { font-size: 22px; color: #2D3142; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--color-primary); }
 .legal-content h3 { font-size: 17px; color: #2D3142; margin: 32px 0 12px; }
 .legal-content p { color: #5C6280; line-height: 1.9; margin-bottom: 16px; }
 .legal-content ul { color: #5C6280; line-height: 1.9; padding-left: 24px; margin-bottom: 16px; }
@@ -72,7 +72,7 @@
   flex-shrink: 0;
   padding: 10px 18px;
   border: 1px solid var(--color-primary-dark);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-button);
   color: var(--color-primary-dark);
   background: var(--color-surface);
   font-size: .85rem;
@@ -80,13 +80,13 @@
   transition: background var(--transition), color var(--transition), box-shadow var(--transition);
 }
 .analytics-opt-out button:hover,
-.analytics-opt-out button:focus-visible { box-shadow: 0 0 0 3px rgba(196, 115, 138, .18); }
+.analytics-opt-out button:focus-visible { box-shadow: 0 0 0 3px rgba(220, 84, 80, .18); }
 @media (max-width: 600px) {
   .analytics-opt-out { align-items: stretch; flex-direction: column; }
   .analytics-opt-out button { width: 100%; }
 }
-.legal-link { color: #E8A5B0; }
-.legal-link--strong { color: #E8A5B0; font-weight: 500; }
+.legal-link { color: var(--color-primary); }
+.legal-link--strong { color: var(--color-primary); font-weight: 500; }
 
 /* ── 施設掲載について ── */
 .listing-content {
@@ -96,13 +96,13 @@
 .listing-intro {
   padding: 40px;
   border: 1px solid #f0e8ec;
-  border-radius: 20px;
+  border-radius: var(--radius-button);
   background: linear-gradient(135deg, #fff 0%, #fdf6f8 100%);
   box-shadow: 0 8px 24px rgba(45, 49, 66, 0.06);
 }
 .listing-eyebrow {
   margin-bottom: 8px;
-  color: #C4738A;
+  color: var(--color-primary);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: .08em;
@@ -130,14 +130,14 @@
 .listing-section > h2 {
   margin-bottom: 20px;
   padding-left: 14px;
-  border-left: 4px solid #E8A5B0;
+  border-left: 4px solid var(--color-primary);
   font-size: 24px;
 }
 .listing-targets,
 .listing-notes {
   margin: 20px 0 0;
   padding: 24px 24px 24px 48px;
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   background: #fdf6f8;
   color: #5C6280;
   line-height: 2;
@@ -154,7 +154,7 @@
 .listing-detail-card {
   padding: 24px;
   border: 1px solid #f0e8ec;
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   background: #fff;
 }
 .listing-detail-card h3,
@@ -178,7 +178,7 @@
   align-items: flex-start;
   padding: 22px 24px;
   border: 1px solid #f0e8ec;
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   background: #fff;
 }
 .listing-flow__number {
@@ -189,14 +189,14 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #E8A5B0;
+  background: var(--color-primary);
   color: #fff;
   font-weight: 700;
 }
 .listing-cta {
   margin-top: 64px;
   padding: 40px;
-  border-radius: 20px;
+  border-radius: var(--radius-button);
   background: #fdf6f8;
   text-align: center;
 }
@@ -214,14 +214,14 @@
 .faq-category { margin-bottom: 48px; }
 .faq-category__title {
   font-size: 20px;
-  color: #E8A5B0;
-  border-left: 4px solid #E8A5B0;
+  color: var(--color-primary);
+  border-left: 4px solid var(--color-primary);
   padding-left: 12px;
   margin-bottom: 16px;
 }
 .faq-item {
   border: 1px solid #f0e8ec;
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   margin-bottom: 8px;
   overflow: hidden;
 }
@@ -274,7 +274,7 @@
 }
 .contact-info {
   background: #fdf6f8;
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   padding: 32px;
 }
 .contact-info h3 {
@@ -288,7 +288,7 @@
 }
 .quick-links li { margin-bottom: 8px; }
 .quick-links a {
-  color: #E8A5B0;
+  color: var(--color-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -296,7 +296,7 @@
   font-size: 0.9rem;
   transition: color 0.3s;
 }
-.quick-links a:hover { color: #C4738A; }
+.quick-links a:hover { color: var(--color-primary); }
 .quick-links a::before { content: "→"; }
 .contact-info__note {
   margin-top: 24px;
@@ -308,7 +308,7 @@
 }
 .contact-form-wrap {
   background: #fff;
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   padding: 40px;
   border: 1px solid #f0e8ec;
   box-shadow: 0 4px 16px rgba(45, 49, 66, 0.06);
@@ -320,7 +320,7 @@
   width: 100%;
   padding: 12px 16px;
   border: 1.5px solid var(--color-surface2, #F8F4F0);
-  border-radius: 12px;
+  border-radius: var(--radius-button);
   background: #fff;
   color: #2D3142;
   font-size: 0.9rem;
@@ -329,11 +329,11 @@
   min-height: 140px;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
-.form-textarea:hover { border-color: rgba(232, 165, 176, 0.5); }
+.form-textarea:hover { border-color: rgba(220, 84, 80, 0.5); }
 .form-textarea:focus {
   outline: none;
-  border-color: #C4738A;
-  box-shadow: 0 0 0 3px rgba(196, 115, 138, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(220, 84, 80, 0.15);
 }
 .form-textarea::placeholder { color: #9B9FBF; }
 .form-checkbox-wrap {
@@ -347,7 +347,7 @@
   height: 18px;
   flex-shrink: 0;
   margin-top: 2px;
-  accent-color: #C4738A;
+  accent-color: var(--color-primary);
   cursor: pointer;
 }
 .form-checkbox-wrap span {
@@ -356,7 +356,7 @@
   line-height: 1.6;
 }
 .form-checkbox-wrap a {
-  color: #E8A5B0;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 .form-error-text {
@@ -404,7 +404,7 @@
   --search-sidebar-width: 296px;
   min-height: calc(100vh - var(--nav-height));
   margin-top: var(--nav-height);
-  background: #fdf6f8;
+  background: var(--color-surface);
 }
 .search-sidebar {
   position: fixed;
@@ -429,17 +429,20 @@
 .search-filter-panel__title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 20px;
-  font-family: var(--font-serif);
+  color: var(--color-orange);
+  font-family: var(--font-sans);
   font-size: 15px;
   font-weight: 700;
+  line-height: 1.4;
 }
 .search-filter-panel__title::before {
-  width: 4px;
-  height: 16px;
-  border-radius: 2px;
-  background: linear-gradient(var(--color-primary), var(--color-primary-dark));
+  flex: 0 0 6px;
+  width: 6px;
+  height: 1.4em;
+  border-radius: var(--radius-full);
+  background: var(--color-orange);
   content: "";
 }
 .search-filter-group {
@@ -496,7 +499,7 @@
 }
 .search-check-item:focus-within {
   border-color: var(--color-primary-dark);
-  box-shadow: 0 0 0 3px rgba(196, 115, 138, .15);
+  box-shadow: 0 0 0 3px rgba(220, 84, 80, .15);
 }
 .search-check-item__box {
   display: flex;
@@ -546,7 +549,14 @@
 .search-check-item__dot--訪問型 { background: #8fa5c9; }
 .search-filter-actions { display: flex; flex-direction: column; gap: 8px; }
 .search-filter-actions .btn { padding: 11px 16px; font-size: 13px; }
-.search-filter-apply { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); }
+.search-filter-apply {
+  border-color: var(--color-red-button);
+  background: var(--color-red-button);
+}
+.search-filter-apply:hover {
+  border-color: var(--color-red-button);
+  background: var(--color-red-button);
+}
 .search-filter-clear { border-color: var(--search-line); background: var(--color-surface); color: var(--color-text-medium); }
 .search-filter-clear:disabled { cursor: default; opacity: .45; transform: none; }
 .search-main {
@@ -563,7 +573,7 @@
   margin-bottom: 26px;
   padding: 22px 28px;
   border: 1px solid var(--search-line);
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   background: linear-gradient(120deg, #fbe9ee 0%, var(--color-surface2) 100%);
 }
 .search-hero h1 { font-family: var(--font-serif); font-size: 22px; letter-spacing: .03em; }
@@ -574,9 +584,9 @@
   gap: 8px;
   padding: 11px 20px;
   border: 1.5px solid var(--color-primary);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-button);
   background: var(--color-surface);
-  box-shadow: 0 4px 16px rgba(196, 115, 138, .10);
+  box-shadow: 0 4px 16px rgba(220, 84, 80, .10);
   color: var(--color-primary-dark);
   font-size: 13.5px;
   font-weight: 700;
@@ -613,7 +623,7 @@
   width: auto;
   padding: 9px 36px 9px 14px;
   border-color: var(--search-line);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-button);
   background-color: var(--color-surface);
   font-size: 13.5px;
 }
@@ -632,33 +642,56 @@
 }
 .search-chip button { color: var(--color-primary-dark); font-size: 12px; line-height: 1; }
 .search-page .facility-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; padding: 0; }
-.search-page .facility-card { border-color: var(--search-line); border-radius: 16px; box-shadow: 0 4px 16px rgba(196, 115, 138, .10); scroll-margin-top: calc(var(--nav-height) + 16px); }
-.search-page .facility-card:hover { box-shadow: 0 12px 28px rgba(196, 115, 138, .18); }
+.search-page .facility-card { position: relative; border-color: var(--search-line); border-radius: var(--radius-button); box-shadow: 0 4px 16px rgba(220, 84, 80, .10); scroll-margin-top: calc(var(--nav-height) + 16px); cursor: pointer; }
+.search-page .facility-card:hover { box-shadow: 0 12px 28px rgba(220, 84, 80, .18); }
+.search-page .facility-card__card-link {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+}
+.search-page .facility-card__card-link:focus-visible {
+  outline: 3px solid rgba(220, 84, 80, .35);
+  outline-offset: -3px;
+}
 .search-pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+.search-pagination__controls {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   flex-wrap: wrap;
-  margin-top: 32px;
 }
 .search-pagination button {
   min-width: 36px;
   height: 36px;
   padding: 0 10px;
   border: 1px solid var(--search-line);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-button);
   background: var(--color-surface);
   color: var(--color-text-medium);
   font-size: .85rem;
 }
 .search-pagination button:hover:not(:disabled),
 .search-pagination button.is-current {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
+  border-color: var(--color-red-button);
+  background: var(--color-red-button);
   color: #fff;
 }
 .search-pagination button:disabled { opacity: .45; cursor: not-allowed; }
+.search-pagination__status {
+  color: var(--color-text-dark);
+  font-size: .85rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
 .search-page .facility-card__img { height: 150px; aspect-ratio: auto; color: #c9a3ad; font-size: 34px; }
 .search-page .search-photo--a { background: linear-gradient(135deg, #fbe3e9, #f6d7de); }
 .search-page .search-photo--b { background: linear-gradient(135deg, #f6ece2, #f0e0d2); }
@@ -666,6 +699,7 @@
 .search-page .availability-badge { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,.95); }
 .search-favorite {
   position: absolute;
+  z-index: 2;
   top: 10px;
   right: 10px;
   display: flex;
@@ -692,15 +726,15 @@
 .search-page .facility-card__type {
   align-self: flex-start;
   padding: 3px 11px;
+  border: 1px solid var(--color-text-light);
   border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-light);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: .05em;
 }
-.search-page .search-care-type--宿泊型 { background: #fbe9ee; color: var(--color-primary-dark); }
-.search-page .search-care-type--通所型 { background: #eef3e9; color: #5e8a4e; }
-.search-page .search-care-type--訪問型 { background: #e9eef6; color: #4e6a9c; }
-.search-page .facility-card__name { margin-bottom: 4px; font-family: var(--font-serif); font-size: 16.5px; }
+.search-page .facility-card__name { margin-bottom: 4px; font-family: var(--font-sans); font-size: 16.5px; }
 .search-page .facility-card__location { margin-bottom: 8px; font-size: 12.5px; }
 .search-page .facility-card__age,
 .search-page .facility-card__contact {
@@ -725,6 +759,7 @@
   text-decoration: underline;
   overflow-wrap: anywhere;
 }
+.search-page .facility-card__contact a { position: relative; z-index: 2; }
 .search-page .facility-card__rating { margin-bottom: 10px; }
 .search-page .tags { gap: 6px; margin-bottom: 14px; }
 .search-page .tag { padding: 3px 10px; background: var(--color-surface2); color: var(--color-text-medium); font-size: 11px; }
@@ -743,11 +778,28 @@
 .search-page .facility-card__price.is-inquiry { color: var(--color-text-medium); font-weight: 400; }
 .search-page .facility-card__price strong { color: var(--color-primary-dark); font-family: var(--font-serif); font-size: 19px; }
 .search-page .facility-card__price small { font-size: 11px; font-weight: 400; }
-.search-page .facility-card__detail-btn { align-self: auto; margin: 0; padding: 8px 16px; font-size: 12.5px; }
+.search-page .facility-card__detail-btn {
+  position: relative;
+  z-index: 2;
+  align-self: auto;
+  margin: 0;
+  padding: 8px 16px;
+  border: 1px solid var(--color-orange);
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-orange);
+  font-size: 12.5px;
+}
+.search-page .facility-card__detail-btn:hover {
+  border-color: var(--color-orange);
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-orange);
+}
 .search-page .facility-empty {
   padding: 70px 20px;
   border: 1px dashed var(--search-line);
-  border-radius: 16px;
+  border-radius: var(--radius-button);
   background: var(--color-surface);
 }
 .search-page .facility-empty > span { display: block; margin-bottom: 10px; font-size: 38px; }
@@ -779,9 +831,9 @@
     align-items: center;
     gap: 8px;
     padding: 13px 28px;
-    border-radius: var(--radius-full);
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-    box-shadow: 0 8px 24px rgba(196,115,138,.45);
+    border-radius: var(--radius-button);
+    background: var(--color-red-button);
+    box-shadow: 0 8px 24px rgba(220,84,80,.45);
     color: #fff;
     font-size: 14px;
     font-weight: 700;
@@ -824,6 +876,18 @@
 }
 
 /* ── 施設詳細ページ ── */
+.facility-detail__hero {
+  padding-top: calc(var(--nav-height) + 24px);
+  padding-bottom: 24px;
+}
+.facility-detail__page-title {
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 3vw, 28px);
+}
+.facility-detail-page {
+  padding-top: 24px;
+  background: var(--color-surface);
+}
 .facility-detail__top {
   display: grid;
   grid-template-columns: minmax(0, 45fr) minmax(220px, 28fr) minmax(220px, 27fr);
@@ -925,29 +989,33 @@
 .facility-detail__subsidy-label {
   display: inline-flex;
   margin-bottom: var(--space-sm);
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  background: #eef3e9;
-  color: #5e8a4e;
-  font-size: .75rem;
-  font-weight: 700;
+  background: var(--color-surface2);
+  color: var(--color-text-medium);
+  font-size: 11px;
+  font-weight: 500;
 }
 .facility-detail__type {
   display: inline-block;
-  padding: 4px 11px;
+  padding: 3px 11px;
+  border: 1px solid var(--color-text-light);
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
-  font-weight: 700;
+  background: transparent;
+  color: var(--color-text-light);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .05em;
 }
-.facility-detail__care-type--宿泊型 { background: #fbe9ee; color: var(--color-primary-dark); }
-.facility-detail__care-type--通所型 { background: #eef3e9; color: #5e8a4e; }
-.facility-detail__care-type--訪問型 { background: #e9eef6; color: #4e6a9c; }
 .facility-detail__info-group { margin-bottom: var(--space-lg); }
 .facility-detail__info-group:last-child { margin-bottom: 0; }
 .facility-detail__info-group h3 {
   margin-bottom: var(--space-sm);
+  padding-left: 10px;
+  border-left: 4px solid var(--color-orange);
   color: var(--color-text-dark);
   font-size: .85rem;
+  line-height: 1.4;
 }
 .facility-detail__info-group > p {
   color: var(--color-text-medium);
@@ -970,7 +1038,7 @@
 }
 .facility-detail__contact-card {
   padding: var(--space-lg);
-  border: 1px solid rgba(232,165,176,.45);
+  border: 1px solid rgba(220,84,80,.45);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   box-shadow: var(--shadow-md);
@@ -978,7 +1046,7 @@
 .facility-detail__contact-card--mobile { display: none; }
 .facility-detail__contact-card h2 {
   margin-bottom: var(--space-xs);
-  font-size: 1.05rem;
+  font-size: .95rem;
 }
 .facility-detail__contact-card > p {
   margin-bottom: var(--space-md);
@@ -1018,7 +1086,7 @@
   padding: 0;
 }
 .facility-detail__section h2 {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   color: var(--color-text-dark);
   margin-bottom: 12px;
   padding-bottom: 8px;
@@ -1047,6 +1115,41 @@
   min-width: 0;
   overflow-wrap: anywhere;
   color: var(--color-text-medium);
+}
+.facility-detail__address {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.facility-detail__address > a:first-child {
+  color: var(--color-navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.facility-detail__meta-row .facility-detail__map-link {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 5px;
+  padding: 4px 9px;
+  border: 1px solid #d4d7db;
+  border-radius: var(--radius-button);
+  background: var(--color-surface);
+  color: var(--color-text-light);
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.facility-detail__map-link svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+.facility-detail__meta-row .facility-detail__map-link:hover {
+  border-color: #b9bdc2;
+  color: var(--color-text-light);
 }
 .facility-detail__meta-value small,
 .facility-detail__multiline-info small {
@@ -1137,7 +1240,7 @@
 .facility-detail__highlight-more[open] summary { margin-bottom: var(--space-md); }
 .facility-detail__subsidy-details {
   overflow: hidden;
-  border: 1px solid var(--color-surface2);
+  border: 1px solid var(--color-navy);
   border-radius: var(--radius-md);
   background: var(--color-surface);
 }
@@ -1203,6 +1306,15 @@
   padding-top: 32px;
   border-top: 1px solid var(--color-surface2);
 }
+.facility-detail__back-link {
+  border-color: var(--color-orange);
+  color: var(--color-orange);
+}
+.facility-detail__back-link:hover {
+  border-color: var(--color-orange);
+  background: var(--color-orange);
+  color: #fff;
+}
 @media (max-width: 768px) {
   .facility-detail__contact-card--desktop { display: none; }
   .facility-detail__contact-card--mobile {
@@ -1215,6 +1327,7 @@
   .facility-detail__top--no-contact { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 480px) {
+  .facility-detail__page-title { font-size: 18px; }
   .facility-detail__main-image { aspect-ratio: 4 / 3; }
   .facility-detail__gallery-arrow { width: 34px; height: 34px; }
   .facility-detail__contact-card { padding: var(--space-md); }

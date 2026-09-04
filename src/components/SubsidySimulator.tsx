@@ -137,7 +137,6 @@ export default function SubsidySimulator() {
   return (
     <div className="widget subsidy-widget">
       <div className="widget__header">
-        <span className="widget__icon">💰</span>
         <h3 className="widget__title">自己負担額シミュレーター</h3>
         <p className="widget__subtitle">現在は福岡市のみ対応しています</p>
       </div>

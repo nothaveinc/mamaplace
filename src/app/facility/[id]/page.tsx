@@ -74,6 +74,8 @@ export default async function FacilityDetailPage({
         title={facility.name}
         path={`/facility/${facility.id}`}
         parent={{ name: "施設を探す", href: "/search" }}
+        className="facility-detail__hero"
+        titleClassName="facility-detail__page-title"
       />
       <FacilityDetail initialFacility={facility} />
     </>

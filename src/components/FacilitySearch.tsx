@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import MultiSelectDropdown from "@/components/MultiSelectDropdown";
 import {
   AREAS,
   AGE_MONTH_OPTIONS,
@@ -15,14 +16,8 @@ import { getPriceDisplay } from "@/data/fukuokaSubsidy";
 import type { CareType } from "@/data/subsidy";
 import { announceDrawerOpen, subscribeToDrawerOpen } from "@/lib/drawerEvents";
 import demo1 from "@/assets/facility-demo/demo-1.svg";
-import demo2 from "@/assets/facility-demo/demo-2.svg";
-import demo3 from "@/assets/facility-demo/demo-3.svg";
 
-const DEMO_IMAGES_BY_VARIANT = {
-  a: demo1,
-  b: demo2,
-  c: demo3,
-} as const;
+const DEMO_IMAGE = demo1;
 
 type SortMode = "recommend" | "name";
 export type Residence = "" | "福岡市" | "福岡市外";
@@ -48,41 +43,15 @@ const CARE_TYPE_LABEL: Record<CareType, string> = {
   訪問型: "訪問",
 };
 
+const AREA_OPTIONS = AREAS.map((area) => ({
+  value: area,
+  label: `福岡県 ${area}`,
+}));
+
 function toggleValue<T extends string>(list: T[], value: T): T[] {
   return list.includes(value)
     ? list.filter((item) => item !== value)
     : [...list, value];
-}
-
-function linkedText(text: string): ReactNode {
-  const url = text.match(/https?:\/\/[^\s）)]+/)?.[0];
-  if (!url) return text;
-
-  const [before, after = ""] = text.split(url);
-  return (
-    <>
-      {before}
-      <a href={url} target="_blank" rel="noreferrer">
-        {url}
-      </a>
-      {after}
-    </>
-  );
-}
-
-function FacilityContact({ facility }: { facility: Facility }) {
-  return (
-    <div className="facility-card__contact">
-      <span>連絡先</span>
-      <div>
-        {facility.contact.phone && (
-          <a href={`tel:${facility.contact.phone}`}>{facility.contact.phone}</a>
-        )}
-        {facility.contact.phone && facility.contact.note && <br />}
-        {facility.contact.note && linkedText(facility.contact.note)}
-      </div>
-    </div>
-  );
 }
 
 export default function FacilitySearch({
@@ -245,6 +214,14 @@ export default function FacilitySearch({
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / FACILITIES_PER_PAGE));
   const currentPage = Math.min(page, totalPages);
+  const firstVisiblePage = Math.min(
+    Math.max(currentPage - 2, 1),
+    Math.max(totalPages - 4, 1),
+  );
+  const visiblePages = Array.from(
+    { length: Math.min(5, totalPages) },
+    (_, index) => firstVisiblePage + index,
+  );
   const pagedFacilities = sorted.slice(
     (currentPage - 1) * FACILITIES_PER_PAGE,
     currentPage * FACILITIES_PER_PAGE,
@@ -394,27 +371,18 @@ export default function FacilitySearch({
             </label>
           </fieldset>
 
-          <fieldset className="search-filter-group">
-            <legend className="filter-label">施設の場所</legend>
-            <div className="search-check-list search-area-list">
-              {AREAS.map((area) => (
-                <label className="search-check-item" key={area}>
-                  <input
-                    type="checkbox"
-                    checked={areas.includes(area)}
-                    onChange={() => {
-                      setPage(1);
-                      setAreas((current) => toggleValue(current, area));
-                    }}
-                  />
-                  <span className="search-check-item__box" aria-hidden="true" />
-                  <span className="search-check-item__label">
-                    福岡県 {area}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
+          <div className="search-filter-group">
+            <MultiSelectDropdown
+              id="facility-search-areas"
+              label="施設の場所"
+              options={AREA_OPTIONS}
+              values={areas}
+              onToggle={(area) => {
+                setPage(1);
+                setAreas((current) => toggleValue(current, area));
+              }}
+            />
+          </div>
 
           <fieldset className="search-filter-group">
             <legend className="filter-label">ケア種別</legend>
@@ -478,13 +446,7 @@ export default function FacilitySearch({
 
       <div className="search-main">
         <header className="search-hero">
-          <div>
-            <h1>福岡の産後ケア施設一覧</h1>
-            <p>福岡県内の宿泊型・日帰り型・訪問型施設から、あなたに合ったケアを探せます。</p>
-          </div>
-          <Link className="search-hero__cta" href="/#subsidy">
-            💰 公費助成シミュレーターで自己負担額をチェック <span aria-hidden="true">→</span>
-          </Link>
+          <h1>福岡の産後ケア施設一覧</h1>
         </header>
 
         {residence === "福岡市外" && (
@@ -533,8 +495,14 @@ export default function FacilitySearch({
             {pagedFacilities.map((facility) => {
               const isFavorite = favorites.has(facility.id);
               const price = getPriceDisplay(facility, { residence });
+              const detailHref = `/facility/${facility.id}?page=${currentPage}${showFavorites ? "&favorites=1" : ""}`;
               return (
                 <article className="facility-card" id={`facility-${facility.id}`} key={facility.id}>
+                  <Link
+                    href={detailHref}
+                    className="facility-card__card-link"
+                    aria-label={`${facility.name}の詳細を見る`}
+                  />
                   <div className={`facility-card__img search-photo--${facility.photoVariant}`}>
                     {facility.photos[0] ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -546,7 +514,7 @@ export default function FacilitySearch({
                       />
                     ) : (
                       <Image
-                        src={DEMO_IMAGES_BY_VARIANT[facility.photoVariant]}
+                        src={DEMO_IMAGE}
                         alt={`${facility.name}のイメージ画像`}
                         width={800}
                         height={600}
@@ -574,7 +542,6 @@ export default function FacilitySearch({
                     <h2 className="facility-card__name">{facility.name}</h2>
                     <p className="facility-card__location">📍 福岡県{facility.addressDetail}</p>
                     <p className="facility-card__age"><span>対象月齢</span> {facility.ageLimit}</p>
-                    <FacilityContact facility={facility} />
                     <div className="tags">
                       {facility.features.map((feature) => (
                         <span className="tag" key={feature}>{feature}</span>
@@ -588,8 +555,8 @@ export default function FacilitySearch({
                         {price.label}
                       </p>
                       <Link
-                        href={`/facility/${facility.id}?page=${currentPage}${showFavorites ? "&favorites=1" : ""}`}
-                        className="btn btn--primary btn--sm facility-card__detail-btn"
+                        href={detailHref}
+                        className="btn btn--sm facility-card__detail-btn"
                       >
                         詳細を見る
                       </Link>
@@ -603,39 +570,46 @@ export default function FacilitySearch({
 
         {totalPages > 1 && (
           <nav className="search-pagination" aria-label="施設一覧のページ送り">
-            <button
-              type="button"
-              onClick={() => changePage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              前へ
-            </button>
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <div className="search-pagination__controls">
               <button
                 type="button"
-                key={pageNumber}
-                className={pageNumber === currentPage ? "is-current" : undefined}
-                aria-current={pageNumber === currentPage ? "page" : undefined}
-                aria-label={`${pageNumber}ページ目`}
-                onClick={() => changePage(pageNumber)}
+                onClick={() => changePage(currentPage - 1)}
+                disabled={currentPage === 1}
               >
-                {pageNumber}
+                前へ
               </button>
-            ))}
-            <button
-              type="button"
-              onClick={() => changePage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              次へ
-            </button>
+              {visiblePages.map((pageNumber) => (
+                <button
+                  type="button"
+                  key={pageNumber}
+                  className={pageNumber === currentPage ? "is-current" : undefined}
+                  aria-current={pageNumber === currentPage ? "page" : undefined}
+                  aria-label={`${pageNumber}ページ目`}
+                  onClick={() => changePage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => changePage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                次へ
+              </button>
+            </div>
+            <p className="search-pagination__status" aria-live="polite">
+              {currentPage} / {totalPages}ページ
+            </p>
           </nav>
         )}
       </div>
 
-      <button type="button" className="search-drawer-toggle" aria-controls="search-filter-sidebar" aria-expanded={isDrawerOpen} onClick={openFilterDrawer}>
-        🔍 条件をしぼる
-      </button>
+      {!isDrawerOpen && (
+        <button type="button" className="search-drawer-toggle" aria-controls="search-filter-sidebar" aria-expanded="false" onClick={openFilterDrawer}>
+          条件をしぼる
+        </button>
+      )}
     </div>
   );
 }
